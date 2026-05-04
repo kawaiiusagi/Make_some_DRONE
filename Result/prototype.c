@@ -164,5 +164,21 @@ void do_random() {
 	}
 
 }
+
+void fprint01(FILE* fw, Node* head) //Node_h는 헤더
+{
+	Node* temp;
+	temp = head;
+	while (temp->rlink != NULL)
+	{
+		temp=temp->rlink;
+	}
+	if(temp!=NULL)
+	{
+		fprintf(fw,"%d %d\n",temp->x,temp->y);
+		fprintf(stdout,"%d %d\n",temp->x,temp->y);
+	}
+}
+
 void do_direct() {}
 void do_FILE() {}
