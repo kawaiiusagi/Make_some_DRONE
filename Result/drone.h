@@ -13,6 +13,7 @@
 #define Enemy_spotted 8
 #define Bomb 1
 #define Map_size 100
+#define NODE_WIDTH 8
 
 typedef struct Node
 {
