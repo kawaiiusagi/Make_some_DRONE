@@ -127,12 +127,10 @@ void reporting()
 		return;
 	}
 
-	// 표 형식 출력을 위한 포맷 지정 (이 부분이 빠져서 C2065 에러가 났던 겁니다)
 	const char* header_format = "%-12s %-10s %-8s %-15s %-15s %-12s %-20s %-20s\n";
 	const char* row_format = "%-12s %-10.1f %-8.1f %-15.1f %-15.1f %-12s %-20s %-20s\n";
 	const char* track_format = "%-12s %-10s %-8s %-15s %-15.1f %-12s %-20s %-20s\n";
 
-	// 1. 테이블 헤더(머리글) 출력
 	fprintf(fp1, header_format, "구간", "거리(m)", "K", "배터리 소모량", "누적 소모량", "상태", "이벤트", "안전회귀 경로");
 	fprintf(stdout, header_format, "구간", "거리(m)", "K", "배터리 소모량", "누적 소모량", "상태", "이벤트", "안전회귀 경로");
 
@@ -140,62 +138,53 @@ void reporting()
 	fprintf(stdout, "---------------------------------------------------------------------------------------------------------\n");
 
 	report_Node* temp = rhead->rlink;
-	used_battery = 0.0; // 누적 소모량 초기화
+	used_battery = 0.0;
 
 	while (temp != NULL)
 	{
-		// 고장(FAILURE)이나 역추적(RECOVERY) 상태를 만나면 회귀 시작
-		if (temp->state == 2 || temp->state == 3)
+		// 1. 현재 노드는 (정상이든 에러든) 일단 한 줄 무조건 출력합니다.
+		used_battery += temp->battery_use;
+		fprintf(fp1, row_format, temp->stage, temp->dist, temp->K, temp->battery_use,
+			used_battery, droneState[temp->state], droneEvent[temp->event], "-");
+		fprintf(stdout, row_format, temp->stage, temp->dist, temp->K, temp->battery_use,
+			used_battery, droneState[temp->state], droneEvent[temp->event], "-");
+
+		// 2. 출력 후, 방금 출력한 노드의 상태가 1(ERROR)이거나 2(FAILURE)라면 바로 스택을 꺼내며 회귀(역추적) 시작
+		if (temp->state == 1 || temp->state == 2) 
 		{
-			// 스택(top)에 쌓인 경로를 역순으로 모두 꺼내서(Pop) 출력
-			while (top->rlink != NULL)
+			while (top->rlink != NULL) 
 			{
 				reportstack_Node* current_pos = top->rlink;
-
-				char stage_buf[30];
-				char path_buf[30];
-
-				// 다음 노드가 있으면 경로 표시 (예: D -> C)
+				
+				// 다음 노드(rlink)가 있을 때만 회귀 경로를 출력 (마지막 A 도착 시 빈 줄 출력 방지)
 				if (current_pos->rlink != NULL) {
+					char stage_buf[30];
+					char path_buf[30];
+					
 					sprintf(stage_buf, "%s%s(회귀)", current_pos->stage, current_pos->rlink->stage);
 					sprintf(path_buf, "%s -> %s", current_pos->stage, current_pos->rlink->stage);
+
+					// 회귀 시 배터리 누적 (스택에 저장된 해당 구간의 소모량 가산)
+					used_battery += current_pos->used_battery; 
+
+					fprintf(fp1, track_format, stage_buf, "-", "-", "-", used_battery,
+						"RECOVERY", "Recovery tracking", path_buf);
+					fprintf(stdout, track_format, stage_buf, "-", "-", "-", used_battery,
+						"RECOVERY", "Recovery tracking", path_buf);
 				}
-				else {
-					// 마지막 노드면 출발지에 도착한 것
-					sprintf(stage_buf, "%s(도착)", current_pos->stage);
-					strcpy(path_buf, "Home");
-				}
 
-				// 역추적 시에도 배터리는 계속 소모되므로 스택에 있던 값 누적
-				used_battery += current_pos->used_battery;
-
-				fprintf(fp1, track_format, stage_buf, "-", "-", "-", used_battery,
-					"RECOVERY", "Recovery tracking", path_buf);
-				fprintf(stdout, track_format, stage_buf, "-", "-", "-", used_battery,
-					"RECOVERY", "Recovery tracking", path_buf);
-
-				// 스택에서 노드를 꺼냈으니 메모리 해제 (Pop)
+				// 스택에서 꺼내기 (Pop) 및 메모리 해제
 				reportstack_Node* del = current_pos;
 				top->rlink = current_pos->rlink;
-				free(del->stage); // push할 때 동적 할당했으므로 먼저 free
+				free(del->stage); // 동적 할당된 stage 문자열 먼저 반환[cite: 1]
 				free(del);
 			}
-			break; // 스택을 다 비우고 회귀를 끝냈으므로 반복문 완전 종료
-		}
-		else
-		{
-			// 일반 전진 기록 출력 (NORMAL, ERROR)
-			used_battery += temp->battery_use;
-			fprintf(fp1, row_format, temp->stage, temp->dist, temp->K, temp->battery_use,
-				used_battery, droneState[temp->state], droneEvent[temp->event], "-");
-			fprintf(stdout, row_format, temp->stage, temp->dist, temp->K, temp->battery_use,
-				used_battery, droneState[temp->state], droneEvent[temp->event], "-");
+			break; // 회귀를 모두 마쳤으므로 전체 반복문 완전히 종료
 		}
 
 		temp = temp->rlink;
 	}
 	fclose(fp1);
-	//system("notepad.exe 04.txt");
 }
 void push(reportstack_Node* top, int* listlen, double battery_use)
 {
