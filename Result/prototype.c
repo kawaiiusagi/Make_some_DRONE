@@ -165,7 +165,7 @@ void do_random() {
 
 }
 
-void fprint01(FILE* fw, Node* head) //Node_h는 헤더
+void fprint01(FILE* fw, Node* head)
 {
 	Node* temp;
 	temp = head;
