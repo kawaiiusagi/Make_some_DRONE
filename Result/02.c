@@ -26,6 +26,8 @@ void read_list()
 		if (head == NULL) head = node;
 		else sort_nodes(head, node);
 	}
+
+	fclose(fp); //안 닫아두셔서 추가 했습니다_mb
 }
 
 void sort_nodes(Node* head, Node* node)
