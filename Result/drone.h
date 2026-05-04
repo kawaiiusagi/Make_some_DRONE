@@ -43,5 +43,7 @@ void do_random();
 void do_direct();
 void do_FILE();
 
+//파일 입출력 함수
+void print01(Node* ,FILE* );
 
 #endif
