@@ -1,3 +1,5 @@
+fp=fopen("01.txt","w");
+
 	for (i = 0; i < MAX; i++) //이동 할 노드 만들기
 	{
 		x = rand() % 100;
