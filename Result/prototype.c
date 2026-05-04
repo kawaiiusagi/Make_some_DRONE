@@ -124,7 +124,8 @@ void do_random() {
 	int x, y;
 
 	srand((unsigned int)time(NULL));
-	
+
+	fw=fopen("01.txt","w");
 	for (int i = 0; i < temp_num; i++)
 	{
 		while (1)
@@ -134,14 +135,15 @@ void do_random() {
 
 			int state = check_node(head, x, y);
 
-			if (state == 2)
+			if (state == 2) //중복상태 넘어가기
 			{
 				continue;
 			}
+			
 			else
 			{
-				
-
+				fprintf(fw, "%d %d\n", x, y);
+				fprintf(stdout, "%d %d\n", x, y);
 				break;
 			}
 		}
@@ -164,27 +166,10 @@ void do_random() {
 		// 	get_node_nums();
 
 		// 	printf("Node created at (%d, %d)\n", node->x, node->y);
-
-			
-		}
-
+		
 	}
-
-}
-
-void fprint01(FILE* fw, Node* head)
-{
-	Node* temp;
-	temp = head;
-	while (temp->rlink != NULL)
-	{
-		temp=temp->rlink;
-	}
-	if(temp!=NULL)
-	{
-		fprintf(fw,"%d %d\n",temp->x,temp->y);
-		fprintf(stdout,"%d %d\n",temp->x,temp->y);
-	}
+	fclose(fw);
+	
 }
 
 void do_direct() {}
