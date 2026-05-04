@@ -24,7 +24,7 @@ void fread03() //03.txt읽어와서 리스트 만들기
 		printf("Cannot read the file\n");
 		return;
 	}
-	char stage[5];
+	char stage[6];
 	double dist;
 	double K;
 	double battery_use;
