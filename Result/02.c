@@ -70,3 +70,5 @@ void get_node_nums()
 //		printf("%d")
 //	}
 //}
+
+//show list하고 동적 메모리 헤채하는것도 추가하세요
