@@ -5,13 +5,13 @@ report_Node* rhead = NULL;
 FILE* fp1 = NULL;
 double Maxbattery=800,battery = 800; 
 double used_battery = 0.0;
-char* droneState[] = { "NORMAL", "ERROR", "FAILURE", "RECOVERY"};//state : 0 Á¤»ó, 1 ¹èÅÍ¸® ºÎÁ·, 2 ±âÃ¼°íÀå, 3 ¿ªÃßÃ´
-char* droneEvent[] = {"NORMAL", "Mission fail", "Recovery tracking"}; //event : 0 Á¤»ó, 1 ¹Ì¼Ç½ÇÆÐ, 2 ¿ªÃßÀû
+char* droneState[] = { "NORMAL", "ERROR", "FAILURE", "RECOVERY"};//state : 0 ì •ìƒ, 1 ë°°í„°ë¦¬ ë¶€ì¡±, 2 ê¸°ì²´ê³ ìž¥, 3 ì—­ì¶”ì²™
+char* droneEvent[] = {"NORMAL", "Mission fail", "Recovery tracking"}; //event : 0 ì •ìƒ, 1 ë¯¸ì…˜ì‹¤íŒ¨, 2 ì—­ì¶”ì 
 char* pointName[] = { "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
 int listlen = 0;
 int box;
 
-void fread03() //03.txtÀÐ¾î¿Í¼­ ¸®½ºÆ® ¸¸µé±â
+void fread03() //03.txtì½ì–´ì™€ì„œ ë¦¬ìŠ¤íŠ¸ ë§Œë“¤ê¸°
 {
 	fp1 = fopen("03.txt","r");
 
@@ -148,6 +148,7 @@ void reporting()
 					fprintf(fp1, "-> ");
 					fprintf(stdout, "-> ");
 				}
+				pre=pre->rlink;
 			}while (i < box);
 		}
 
