@@ -113,14 +113,28 @@ void build_dist_list()
 
 }
 
-//void print_dist_list()
-//{
-//    Dist_node* temp = dist_head;
-//
-//    while (temp != NULL)
-//    {
-//        printf("%s | (%d, %d) | dist: %.2f | k: %.1f | battery: %.2f\n",
-//            temp->stage, temp->x, temp->y, temp->distance, temp->k, temp->battery_use);
-//        temp = temp->next;
-//    }
-//}
+void print_dist_list()
+{
+	FILE* fp = fopen("03.txt", "w");
+	if (fp == NULL)
+	{
+		printf("Cannot open 03.txt\n");
+		return;
+	}
+
+	Dist_node* temp = dist_head;
+	double total_dist = 0;
+	double total_battery = 0;
+
+	while (temp != NULL)
+	{
+		fprintf(fp, "%s %.1f %.1f %.1f\n", temp->stage, temp->distance, temp->k, temp->battery_use);
+		total_dist += temp->distance;
+		total_battery += temp->battery_use;
+		temp = temp->next;
+	}
+
+	fprintf(fp, "TOTAL %.1f - %.1f\n", total_dist, total_battery);
+
+	fclose(fp);
+}
