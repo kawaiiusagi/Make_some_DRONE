@@ -4,7 +4,13 @@ Node* head = NULL;
 int node_count = 0;
 FILE* fw=NULL,* fa=NULL,* fr=NULL;
 
-void start_UI() {} // starting point
+void start_UI() 
+{
+	printf("-----------------\n");
+	printf("*****WELCOME*****\n");
+	printf("START THE MISSION\n");
+	printf("-----------------\n");
+} // starting point
 void input_sys()
 {
 	while (1)
