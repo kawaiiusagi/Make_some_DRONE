@@ -17,13 +17,17 @@ void fprint01(FILE* fw, Node* head) //Node_h는 헤더
 	}
 }
 
-void read01()
+void fread01()
 {
 	FILE* fr,* fw;
 	int x,y;
 	fr=fopen("01.txt","r");
 	fw=fopen("02.txt","w");
-	while(fscanf)
+	while(fscanf(fr,"%d",&x)!=NULL)
+	{
+		fprintf(fw,"%d ",x);
+		fprintf(stdout,"%d\n",y);
+	}		
 }
 
 
