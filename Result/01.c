@@ -49,7 +49,7 @@ void input_sys()
 
 void do_random() {
 	int temp_num = 0;
-
+	FILE* fw=NULL;
 	while (1)
 	{
 		printf("How many nodes do you want to add? : ");
@@ -70,7 +70,13 @@ void do_random() {
 	int x, y;
 
 	srand((unsigned int)time(NULL));
-
+	
+	fw=fopen("01.txt","w");
+	if(fw==NULL)
+	{
+		return 0;
+	}
+	
 	for (int i = 0; i < temp_num; i++)
 	{
 		while (1)
@@ -84,16 +90,18 @@ void do_random() {
 			{
 				continue;
 			}
+				
 			else
 			{
 				//여기서 이제 파일 읽어오셔서 해주시면 됩니다.
-
+				fprintf(fw,"%d %d\n",x,y);
+				fprintf(stdout,"%d %d\n",x,y);
 				break;
 			}
 		}
 
 	}
-
+	fclose(fw);
 }
 
 int check_coordinate(int x, int y)
