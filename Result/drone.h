@@ -44,7 +44,7 @@ typedef struct report_Node {
 	struct report_Node* rlink;
 }report_Node;
 
-typedef struct reportstack_Node{
+typedef struct reportstack_Node {
 	char* stage;
 	double used_battery;
 	struct reportstack_Node* rlink;
@@ -71,6 +71,7 @@ void do_direct();
 void do_FILE();
 
 int check_coordinate();
+void freeList(Node* head);
 
 //파일 입출력 함수
 void fprint01(FILE*, Node*);
@@ -85,8 +86,8 @@ double calc_dist(int x1, int y1, int x2, int y2);
 
 double get_k(double dist);
 void reporting();
-void push(reportstack_Node* top,int* listlen,double battery_use);
+void push(reportstack_Node* top, int* listlen, double battery_use);
 void fread03();
-void freeList(Node* );
 
+void RandomStart();
 #endif
