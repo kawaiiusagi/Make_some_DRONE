@@ -74,7 +74,7 @@ void do_random()
 	{
 		return 0;
 	}
-
+	RandomStart();
 	for (int i = 0; i < temp_num; i++)
 	{
 		while (1)
@@ -111,6 +111,13 @@ int check_coordinate(int x, int y)
 	}
 	return 1;
 
+}
+
+void RandomStart()
+{
+	printf("___________________\n");
+	printf("  RANDOM WAYPOINT \n");
+	printf("___________________");
 }
 
 void do_direct() {}
