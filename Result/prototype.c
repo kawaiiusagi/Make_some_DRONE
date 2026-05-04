@@ -124,7 +124,7 @@ void do_random() {
 	int x, y;
 
 	srand((unsigned int)time(NULL));
-
+	
 	for (int i = 0; i < temp_num; i++)
 	{
 		while (1)
@@ -140,7 +140,8 @@ void do_random() {
 			}
 			else
 			{
-				fprint01(FILE* fw, Node* head);
+				
+
 				break;
 			}
 		}
