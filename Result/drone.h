@@ -45,11 +45,10 @@ void do_FILE();
 
 int check_coordinate();
 
-//파일 입출력 함수
-void fprint01(FILE*, Node*);
-
 void read_list();
 void show_list();
+void freeList(Node* head);
 //void make_list(Node* head);
+
 
 #endif
