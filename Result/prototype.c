@@ -130,11 +130,11 @@ void do_random() {
 
 			if (state == 2)
 			{
-				fprint01(FILE* fw, Node* head);
 				continue;
 			}
 			else
 			{
+				fprint01(FILE* fw, Node* head);
 				break;
 			}
 		}
