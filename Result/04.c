@@ -16,6 +16,9 @@ void fread03() //03.txt읽어와서 리스트 만들기
 	fp1 = fopen("03.txt","r");
 	top=(reportstack_Node*)malloc(sizeof(reportstack_Node));
 	rhead=(report_Node*)malloc(sizeof(report_Node));
+	top->rlink=NULL;
+	rhead->rlink=NULL;
+	
 	if (fp1 == NULL)
 	{
 		printf("Cannot read the file\n");
