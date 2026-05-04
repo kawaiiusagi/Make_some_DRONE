@@ -4,15 +4,17 @@
 
 void fprint01(FILE* fw, Node* head) //Node_h는 헤더
 {
-	
-	Node* point;
-	point = head->head;
-	fprintf(fw, "%s %s\n", "x", "y");
-	while (point != NULL)
+	Node* temp;
+	temp = head;
+	while (temp->rlink != NULL)
 	{
-		fprintf(fw, "%d %d\n", point->x, point->y);
+		temp=temp->rlink;
 	}
-	fclose(fw);
+	if(temp!=NULL)
+	{
+		fprintf(fw,"%d %d\n",temp->x,temp->y);
+		fprintf(stdout,"%d %d\n",temp->x,temp->y);
+	}
 }
 
 	for (int i = 0; i < temp_num; i++)
