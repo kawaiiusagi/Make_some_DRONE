@@ -1,7 +1,7 @@
 //fr : file read
 //fw : file write
 //fa : file append
-
+//파일 면저 헤더 다음!
 void fprint01(FILE* fw, Node* head) //Node_h는 헤더
 {
 	Node* temp;
