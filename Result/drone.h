@@ -34,6 +34,22 @@ typedef struct Dist_node
 	double k;
 }Dist_node;
 
+typedef struct report_Node {
+	char* stage; //구간
+	double dist; //거리
+	double K; //상수k
+	double battery_use; //배터리 소모량
+	int state; //상태
+	int event; //이벤트
+	struct report_Node* rlink;
+}report_Node;
+
+typedef struct reportstack_Node{
+	char* stage;
+	double used_battery;
+	struct reportstack_Node* rlink;
+}reportstack_Node;
+
 extern Node* head;
 
 //typedef struct Stack
