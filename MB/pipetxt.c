@@ -17,37 +17,13 @@ void fprint01(FILE* fw, Node* head) //Node_h는 헤더
 	}
 }
 
-	for (int i = 0; i < temp_num; i++)
-	{
-
-		fw = fopen("01.txt", "w"); //01.txt작성
-		while (1)
-		{
-			x = rand() % Map_size + 1;
-			y = rand() % Map_size + 1;
-
-			int state = check_node(head, x, y);
-
-			if (state == 2)
-			{
-				fprint01(FILE* fw, Node* head)
-				continue;
-			}
-			else
-			{
-				break;
-			}
-		}
-		fclose(fw);
-	}
-
 void read01()
 {
 	FILE* fr,* fw;
 	int x,y;
 	fr=fopen("01.txt","r");
 	fw=fopen("02.txt","w");
-	while
+	while(fscanf)
 }
 
 
