@@ -16,6 +16,21 @@ void fprint01(Node* head) //Node_h는 헤더
 	fclose(fw);
 }
 
+	for (int i = 0; i < temp_num; i++)
+	{
+		while (1)
+		{
+			x = rand() % Map_size + 1;
+			y = rand() % Map_size + 1;
+
+			int state = check_node(head, x, y);
+
+			if (state == 2) continue;
+			
+			break;
+		}
+	}
+
 void read01()
 {
 	FILE* fr,* fw;
