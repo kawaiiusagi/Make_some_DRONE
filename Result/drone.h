@@ -8,12 +8,12 @@
 #include <time.h>
 #include <windows.h>
 #include <stdbool.h>
+#include <math.h>
 
 #define Battery_per_move
 #define Enemy_spotted 8
 #define Bomb 1
 #define Map_size 100
-#define NODE_WIDTH 8
 
 typedef struct Node
 {
@@ -22,22 +22,31 @@ typedef struct Node
 	int x, y;
 	int link_pos;
 	//int is_blocked;
-	char* content;
+	//char* content;
 } Node;
 
-typedef struct Stack
+typedef struct Dist_node
 {
+	struct Dist_node* next;
 	int x, y;
-	int link_pos;
-	struct Stack* next;
-} Stack;
+	char* stage;
+	double distance, battery_use;
+	double k;
+}Dist_node;
 
+extern Node* head;
 
-extern int block_pos[100][2];
-extern int block_cnt;
+//typedef struct Stack
+//{
+//	int x, y;
+//	int link_pos;
+//	struct Stack* next;
+//} Stack;
+
+//extern int block_pos[100][2];
+//extern int block_cnt;
 
 void start_UI();
-void RandomStart();
 void input_sys();
 void sort_nodes();
 void get_node_nums();
@@ -47,10 +56,17 @@ void do_FILE();
 
 int check_coordinate();
 
-void read_list();
-void show_nodes();
-void freeList(Node* head);
-//void make_list(Node* head);
+//파일 입출력 함수
+void fprint01(FILE*, Node*);
 
+void show_nodes();
+void read_list();
+//void make_list(Node* head);
+void read_node();
+void build_dist_list();
+double calc_battery(int x1, int y1, int x2, int y2);
+double calc_dist(int x1, int y1, int x2, int y2);
+
+double get_k(double dist);
 
 #endif
