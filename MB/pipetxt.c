@@ -2,12 +2,12 @@
 //fw : file write
 //fa : file append
 
-void fprint01(Node_h* Hnode) //Node_h는 헤더
+void fprint01(Node* head) //Node_h는 헤더
 {
 	FILE* fw;
 	fw = fopen("01.txt", "w"); //01.txt작성
 	Node* point;
-	point = Hnode->head;
+	point = head->head;
 	fprintf(fw, "%s %s\n", "x", "y");
 	while (point != NULL)
 	{
