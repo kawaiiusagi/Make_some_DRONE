@@ -4,7 +4,7 @@ NoErrorPipeline();		//파이프 라인 무사히 완료됨 표시
 
 BatteryLow();			//배터리 낮을때 경고 출력
 
-printFactor();			//소모계수 출력
+printFactor(Node* temp);			//소모계수 출력
 
 void dronemove();	//드론 전진할때마다 전진했습니다 및 전진한 그림 출력
 /*
