@@ -93,7 +93,7 @@ void show_nodes(Node* head)
 	fclose(fp);
 }
 
-//show list하고 동적 메모리 헤채하는것도 추가하세요 < 완료
+//show_nodes하고 동적 메모리 헤채하는것도 추가하세요 < 완료
 void freeList(Node* head)
 {
 	Node* temp = head->rlink;
