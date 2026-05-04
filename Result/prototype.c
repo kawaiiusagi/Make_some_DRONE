@@ -132,24 +132,24 @@ void do_random() {
 			break;
 		}
 
-		Node* node = (Node*)malloc(sizeof(Node));
-		if (node == NULL) {
-			printf("Error. Node cannot created");
-		}
-		else
-		{
-			if (head == NULL) head = node;
+		// Node* node = (Node*)malloc(sizeof(Node));
+		// if (node == NULL) {
+		// 	printf("Error. Node cannot created");
+		// }
+		// else
+		// {
+		// 	if (head == NULL) head = node;
 
-			node->x = x;
-			node->y = y;
-			node->content = "Node";
-			node->rlink = NULL;
-			node->llink = NULL;
+		// 	node->x = x;
+		// 	node->y = y;
+		// 	node->content = "Node";
+		// 	node->rlink = NULL;
+		// 	node->llink = NULL;
 
-			sort_nodes(head, node);
-			get_node_nums();
+		// 	sort_nodes(head, node);
+		// 	get_node_nums();
 
-			printf("Node created at (%d, %d)\n", node->x, node->y);
+		// 	printf("Node created at (%d, %d)\n", node->x, node->y);
 
 			
 		}
