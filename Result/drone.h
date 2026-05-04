@@ -37,6 +37,7 @@ extern int block_pos[100][2];
 extern int block_cnt;
 
 void start_UI();
+void RandomStart();
 void input_sys();
 void sort_nodes();
 void get_node_nums();
