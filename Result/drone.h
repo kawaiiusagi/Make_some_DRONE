@@ -38,6 +38,7 @@ extern int block_cnt;
 void start_UI();
 void input_sys();
 void sort_nodes();
+int check_coordinates();
 void get_node_nums();
 void do_random();
 void do_direct();
