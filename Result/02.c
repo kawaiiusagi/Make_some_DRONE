@@ -2,7 +2,7 @@
 
 Node* head = NULL;
 int node_count = 0;
-FILE* fp=NULL;
+FILE* fp = NULL;
 void read_list()
 {
 	fp = fopen("01.txt", "r");
@@ -19,12 +19,11 @@ void read_list()
 
 		node->x = x;
 		node->y = y;
-		node->content = "Node";
 		node->rlink = NULL;
 		node->llink = NULL;
 
 		if (head == NULL) head = node;
-		else 
+		else
 		{
 			sort_nodes(head, node);
 			get_node_nums();
@@ -73,15 +72,15 @@ void show_nodes(Node* head)
 	if (head == NULL)
 		return;
 	Node* temp = head;
-	fp=fopen("02.txt","w");
-	if(fp==NULL)
+	fp = fopen("02.txt", "w");
+	if (fp == NULL)
 	{
 		printf("Cannot read the file\n");
 		return;
 	}
-	
+
 	fprintf(fp, "link_pos  x  y\n"); //03.c에서 읽어올 때 한 줄 비우고 시작할 것
-	
+
 	while (temp->rlink != NULL)
 	{
 		printf("%d(%d,%d)", temp->link_pos, temp->x, temp->y);
