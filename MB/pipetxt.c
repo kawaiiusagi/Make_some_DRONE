@@ -19,8 +19,13 @@ void fprint01(Node_h* Hnode) //Node_h는 헤더
 void read01()
 {
 	FILE* fr,* fw;
-	
+	int x,y;
+	fr=fopen("01.txt","r");
+	fw=fopen("02.txt","w");
+	while
 }
+
+
 void fprint02(Node_h* Hnode, Node* pre) //pre는 선행 노드로 이미 써둔 노드를 가리킨다.
 {
 	FILE* fa;
@@ -31,6 +36,7 @@ void fprint02(Node_h* Hnode, Node* pre) //pre는 선행 노드로 이미 써둔 
 	{
 		tmp = tmp->rlink;
 	}
+	
 	if (tmp == pre)
 	{
 		while (tmp != NULL)
