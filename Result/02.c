@@ -24,7 +24,11 @@ void read_list()
 		node->llink = NULL;
 
 		if (head == NULL) head = node;
-		else sort_nodes(head, node);
+		else 
+		{
+			sort_nodes(head, node);
+			get_node_nums();
+		}
 	}
 
 	fclose(fp); //안 닫아두셔서 추가 했습니다_mb
