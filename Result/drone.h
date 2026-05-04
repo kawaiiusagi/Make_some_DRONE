@@ -38,11 +38,18 @@ extern int block_cnt;
 void start_UI();
 void input_sys();
 void sort_nodes();
-int check_coordinate();
 void get_node_nums();
 void do_random();
 void do_direct();
 void do_FILE();
 
+int check_coordinate();
+
+//파일 입출력 함수
+void fprint01(FILE*, Node*);
+
+void read_list();
+void show_list();
+//void make_list(Node* head);
 
 #endif
