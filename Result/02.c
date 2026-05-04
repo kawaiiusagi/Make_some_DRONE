@@ -2,13 +2,13 @@
 
 Node* head = NULL;
 int node_count = 0;
-
+FILE* fp=NULL;
 void read_list()
 {
-	FILE* fp = fopen("01.txt", "r");
+	fp = fopen("01.txt", "r");
 	if (fp == NULL)
 	{
-		printf("Cannot read the file");
+		printf("Cannot read the file\n");
 		return;
 	}
 	int x, y;
@@ -31,7 +31,7 @@ void read_list()
 		}
 	}
 
-	fclose(fp); //안 닫아두셔서 추가 했습니다_mb
+	fclose(fp); //안 닫아두셔서 추가 했습니다
 }
 
 void sort_nodes(Node* head, Node* node)
@@ -73,16 +73,25 @@ void show_nodes(Node* head)
 	if (head == NULL)
 		return;
 	Node* temp = head;
+	fp=fopen("02.txt","w");
+	if(fp==NULL)
+	{
+		printf("Cannot read the file\n");
+		return;
+	}
+	
 	while (temp->rlink != NULL)
 	{
 		printf("%d(%d,%d)", temp->link_pos, temp->x, temp->y);
 		printf(" ---(x->%d, y->%d)---> ", temp->rlink->x - temp->x, temp->rlink->y - temp->y);
+		fprintf(fp, "%d %d %d\n", temp->link_pos, temp->x, temp->y);
 		temp = temp->rlink;
 		printf("%d(%d,%d)\n", temp->link_pos, temp->x, temp->y);
 	}
+	fclose(fp);
 }
 
-//show list하고 동적 메모리 헤채하는것도 추가하세요
+//show list하고 동적 메모리 헤채하는것도 추가하세요 < 완료
 void freeList(Node* head)
 {
 	Node* temp = head->rlink;
