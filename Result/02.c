@@ -75,10 +75,10 @@ void show_nodes(Node* head)
 	Node* temp = head;
 	while (temp->rlink != NULL)
 	{
-		printf("%s(%d,%d)", temp->content, temp->x, temp->y);
+		printf("%d(%d,%d)", temp->link_pos, temp->x, temp->y);
 		printf(" ---(x->%d, y->%d)---> ", temp->rlink->x - temp->x, temp->rlink->y - temp->y);
 		temp = temp->rlink;
-		printf("%s(%d,%d)\n", temp->content, temp->x, temp->y);
+		printf("%d(%d,%d)\n", temp->link_pos, temp->x, temp->y);
 	}
 }
 
