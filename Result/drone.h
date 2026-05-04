@@ -68,5 +68,8 @@ double calc_battery(int x1, int y1, int x2, int y2);
 double calc_dist(int x1, int y1, int x2, int y2);
 
 double get_k(double dist);
+void reporting();
+void push(reportstack_Node* top,int* listlen,double battery_use);
+void fread03();
 
 #endif
