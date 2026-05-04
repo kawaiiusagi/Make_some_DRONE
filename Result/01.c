@@ -44,7 +44,8 @@ void input_sys()
 	}
 }
 
-void do_random() {
+void do_random() 
+{
 	int temp_num = 0;
 	FILE* fw = NULL;
 	while (1)
@@ -92,7 +93,7 @@ void do_random() {
 			{
 				//여기서 이제 파일 읽어오셔서 해주시면 됩니다.
 				fprintf(fw, "%d %d\n", x, y);
-				fprintf(stdout, "좌표 생성 (%d %d)\n", x, y);
+				fprintf(stdout, "create waypoint (%d %d)\n", x, y);
 				break;
 			}
 		}
