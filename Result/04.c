@@ -1,7 +1,7 @@
 #include "drone.h"
 
-reportstack_Node* top = NULL;
-report_Node* rhead = NULL;
+reportstack_Node* top = (reportstack_Node*)malloc(sizeof(reportstack_Node));;
+report_Node* rhead = (report_Node*)malloc(sizeof(report_Node));
 FILE* fp1 = NULL;
 double Maxbattery=800,battery = 800; 
 double used_battery = 0.0;
