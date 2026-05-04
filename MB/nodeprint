@@ -1,0 +1,14 @@
+	for (i = 0; i < MAX; i++) //이동 할 노드 만들기
+	{
+		x = rand() % 100;
+		y = rand() % 100;
+
+		record = insertpoint(base, record, x, y);
+	}
+
+	point = base->head;
+	for (i = 0; i < MAX; i++) //이동 할 노드 순서 출력
+	{
+		fprintf(fp, "%d, %d\n", point->x, point->y);
+		point = point->rlink;
+	}
