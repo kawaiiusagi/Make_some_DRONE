@@ -94,6 +94,7 @@ void do_random() {
 			else
 			{
 				//여기서 이제 파일 읽어오셔서 해주시면 됩니다.
+				//좌표생성 ~~~가 되었습니다.
 				fprintf(fw,"%d %d\n",x,y);
 				fprintf(stdout,"%d %d\n",x,y);
 				break;
