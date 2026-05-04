@@ -64,13 +64,18 @@ void get_node_nums()
 	node_count = cnt;
 }
 
-//void show_nodes(Node* head)
-//{
-//	Node* temp = head;
-//	while (temp != NULL) <- 여기 래욱님이 UI 예쁘게 만들어주세요. + 여기서 명보님 파일 로그로 남겨주는것도 작성해주시면 좋을 것 같아요.
-//	{
-//		printf("%d")
-//	}
-//}
+void show_nodes(Node* head)
+{
+	if (head == NULL)
+		return;
+	Node* temp = head;
+	while (temp->rlink != NULL)
+	{
+		printf("%s(%d,%d)", temp->content, temp->x, temp->y);
+		printf(" ---(x->%d, y->%d)---> ", temp->rlink->x - temp->x, temp->rlink->y - temp->y);
+		temp = temp->rlink;
+		printf("%s(%d,%d)\n", temp->content, temp->x, temp->y);
+	}
+}
 
 //show list하고 동적 메모리 헤채하는것도 추가하세요
