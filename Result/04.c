@@ -167,6 +167,7 @@ void reporting()
 		temp = temp->rlink;
 		pre = top->rlink;
 	}
+	fclose(fp1);
 }
 
 void push(reportstack_Node* top,int* listlen,double battery_use)
