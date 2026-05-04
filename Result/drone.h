@@ -46,7 +46,7 @@ void do_FILE();
 int check_coordinate();
 
 void read_list();
-void show_list();
+void show_nodes();
 void freeList(Node* head);
 //void make_list(Node* head);
 
