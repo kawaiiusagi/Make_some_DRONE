@@ -92,7 +92,7 @@ void do_random() {
 			{
 				//여기서 이제 파일 읽어오셔서 해주시면 됩니다.
 				fprintf(fw, "%d %d\n", x, y);
-				fprintf(stdout, "%d %d\n", x, y);
+				fprintf(stdout, "좌표 생성 (%d %d)\n", x, y);
 				break;
 			}
 		}
