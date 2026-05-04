@@ -128,9 +128,15 @@ void do_random() {
 
 			int state = check_node(head, x, y);
 
-			if (state == 2) continue;
-			
-			break;
+			if (state == 2)
+			{
+				fprint01(FILE* fw, Node* head)
+				continue;
+			}
+			else
+			{
+				break;
+			}
 		}
 
 		// Node* node = (Node*)malloc(sizeof(Node));
