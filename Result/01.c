@@ -1,16 +1,16 @@
 #include "drone.h"
 
-Node* head = NULL;
-int node_count = 0;
-FILE* fw=NULL,* fa=NULL,* fr=NULL;
+int for_check_overlap[Map_size + 1][Map_size + 1] = { 0, };
 
-void start_UI() 
+void start_UI()
 {
 	printf("-----------------\n");
 	printf("*****WELCOME*****\n");
 	printf("START THE MISSION\n");
 	printf("-----------------\n");
 } // starting point
+
+
 void input_sys()
 {
 	while (1)
@@ -18,7 +18,7 @@ void input_sys()
 		int num;
 		printf("\nPlease enter the number you want to do\n");
 		printf("1 : random, 2: Directly, 3 : Read on file\n");
-		
+
 
 		if (scanf("%d", &num) != 1 || num != 1 && num != 2 && num != 3)
 		{
@@ -47,60 +47,6 @@ void input_sys()
 	}
 }
 
-int check_node(Node* head, int x, int y)
-{
-	if (head == NULL)
-	{
-		return 1;
-	}
-	else {
-		Node* temp = head;
-		while (temp != NULL)
-		{
-			if (temp->x == x && temp->y == y)
-			{
-				return 2; // 2가 반환되면 중복되는게 있다는 의미
-			}
-			temp = temp->rlink;
-		}
-		return 1;
-	}
-}
-
-void sort_nodes(Node* head, Node* node)
-{
-	Node* temp = head;
-
-	if (head == node) return; // 자기 자신 순회 예외처리
-
-	while (temp->rlink != NULL && temp->rlink->x < node->x)
-	{
-		temp = temp->rlink;
-	}
-	node->rlink = temp->rlink;
-	node->llink = temp;
-
-	if (temp->rlink != NULL) //두 번 하는 이유 -> 양방향 연결리스트이기 때문이다.
-	{
-		temp->rlink->llink = node;
-	}
-	temp->rlink = node;
-}
-
-void get_node_nums()
-{
-	Node* temp = head;
-	int cnt = 0;
-
-	while (temp != NULL)
-	{
-		temp->link_pos = cnt++;
-		temp = temp->rlink;
-	}
-	
-	node_count = cnt;
-}
-
 void do_random() {
 	int temp_num = 0;
 
@@ -118,14 +64,13 @@ void do_random() {
 		}
 		else break;
 	}
-	
+
 	getchar();
 
 	int x, y;
 
 	srand((unsigned int)time(NULL));
 
-	fw=fopen("01.txt","w");
 	for (int i = 0; i < temp_num; i++)
 	{
 		while (1)
@@ -133,43 +78,33 @@ void do_random() {
 			x = rand() % Map_size + 1;
 			y = rand() % Map_size + 1;
 
-			int state = check_node(head, x, y);
+			int state = check_coordinate(x, y);
 
-			if (state == 2) //중복상태 넘어가기
+			if (state == 2)
 			{
 				continue;
 			}
-			
 			else
 			{
-				fprintf(fw, "%d %d\n", x, y);
-				fprintf(stdout, "%d %d\n", x, y);
+				//여기서 이제 파일 읽어오셔서 해주시면 됩니다.
+
 				break;
 			}
 		}
 
-		// Node* node = (Node*)malloc(sizeof(Node));
-		// if (node == NULL) {
-		// 	printf("Error. Node cannot created");
-		// }
-		// else
-		// {
-		// 	if (head == NULL) head = node;
-
-		// 	node->x = x;
-		// 	node->y = y;
-		// 	node->content = "Node";
-		// 	node->rlink = NULL;
-		// 	node->llink = NULL;
-
-		// 	sort_nodes(head, node);
-		// 	get_node_nums();
-
-		// 	printf("Node created at (%d, %d)\n", node->x, node->y);
-		
 	}
-	fclose(fw);
-	
+
+}
+
+int check_coordinate(int x, int y)
+{
+	if (for_check_overlap[x][y] == 1) return 2;
+	else
+	{
+		for_check_overlap[x][y] = 1;
+	}
+	return 1;
+
 }
 
 void do_direct() {}
