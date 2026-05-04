@@ -1,3 +1,7 @@
+//fr : file read
+//fw : file write
+//fa : file append
+
 void fprint01(Node_h* Hnode) //Node_h는 헤더
 {
 	FILE* fw;
@@ -12,6 +16,11 @@ void fprint01(Node_h* Hnode) //Node_h는 헤더
 	fclose(fw);
 }
 
+void read01()
+{
+	FILE* fr,* fw;
+	
+}
 void fprint02(Node_h* Hnode, Node* pre) //pre는 선행 노드로 이미 써둔 노드를 가리킨다.
 {
 	FILE* fa;
@@ -34,6 +43,6 @@ void fprint02(Node_h* Hnode, Node* pre) //pre는 선행 노드로 이미 써둔 
 void print03(FILE* fw, Calc_h* cacl); //Calc_h는 거리 및 배터리소모가 계산되어 저장된 노드의 헤더
 void print04(FILE* fw, Last_h* last);
 //Last_h는 Calc_h에 누적 소모 배터리, 상태, 이벤트, 안전 경로까지 있는 노드의 헤더
-void read01(); //01.txt를 복사 붙여넣기 하기?
+
 void read02(); //02.txt를 읽어 노드 만들기
 void read03(); //03.txt를 읽어 새 노드 만들기
