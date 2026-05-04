@@ -2,6 +2,7 @@
 
 Node* head = NULL;
 int node_count = 0;
+FILE* fw=NULL,* fa=NULL,* fr=NULL;
 
 void start_UI() {} // starting point
 void input_sys()
