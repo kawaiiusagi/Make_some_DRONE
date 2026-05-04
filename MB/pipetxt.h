@@ -1,4 +1,4 @@
-void print01(Node_h* Hnode); //Node_h는 헤더 
+void print01(Node* ,FILE* );
 void print02(Node_h* Hnode, Node* pre); //01.txt를 복사 붙여넣기 하기?
 void print03(Calc_h* cacl); //Calc_h는 거리 및 배터리소모가 계산되어 저장된 노드의 헤더
 void print04(Last_h* last); 
