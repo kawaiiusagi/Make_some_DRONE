@@ -183,6 +183,7 @@ void push(reportstack_Node* top,int* listlen,double battery_use)
 
 	reportstack_Node* temp;
 	temp = (reportstack_Node*)malloc(sizeof(reportstack_Node));
+	temp->stage = (char*)malloc(strlen(pointName[*listlen]) + 1); 
 	strcpy(temp->stage,pointName[*listlen]);
 	(*listlen)--;
 	temp->used_battery = battery_use;
