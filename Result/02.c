@@ -80,7 +80,7 @@ void show_nodes(Node* head)
 		return;
 	}
 	
-	//fprintf(fp, "link_pos  x  y\n"); //넣으면 읽어올 때 첫 줄을 지워야 함
+	fprintf(fp, "link_pos  x  y\n"); //03.c에서 읽어올 때 한 줄 비우고 시작할 것
 	
 	while (temp->rlink != NULL)
 	{
