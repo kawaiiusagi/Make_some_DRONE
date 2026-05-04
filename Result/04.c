@@ -47,6 +47,7 @@ void fread03() //03.txt읽어와서 리스트 만들기
 
 		if (pre == NULL)
 		{
+			node->stage = (char*)malloc(strlen(stage) + 1);
 			strcpy(node->stage,stage);
 			node->dist = dist;
 			node->K = K;
