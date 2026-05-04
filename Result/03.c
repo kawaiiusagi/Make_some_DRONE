@@ -1,9 +1,11 @@
 #include "drone.h"
 
-Node* head = NULL;
+Dist_node* dist_head = NULL;
 
 void read_node()
 {
+	head = NULL;
+
 	FILE* fp = fopen("02.txt", "r");
 	if (fp == NULL)
 	{
@@ -11,38 +13,114 @@ void read_node()
 		return;
 	}
 
-	int x, y, ID;
+	char buf[50];
+	fgets(buf, sizeof(buf), fp);
 
-	while (fscanf(fp, "%d %d %d", &x, &y, &ID) == 3)
+	int x, y, ID;
+	
+	while (fscanf(fp, "%d %d %d", &ID, &x, &y) == 3)
 	{
 		Node* node = (Node*)malloc(sizeof(Node));
 
 		node->x = x;
 		node->y = y;
-		node->rlink = NULL;
 		node->llink = NULL;
+		node->rlink = NULL;
+		node->link_pos = ID;
 
-		if (head == NULL) head = node;
-		else
+		if (head == NULL)
 		{
-			sort_nodes(head, node);
-			get_node_nums();
+			head = node;
+		}
+		else {
+			Node* temp = head;
+
+			while (temp->rlink != NULL)
+			{
+				temp = temp->rlink;
+			}
+			temp->rlink = node;
 		}
 	}
+
+	fclose(fp);
 }
 
-int battery_use(int x, int y)
+double calc_dist(int x1, int y1, int x2, int y2)
 {
-
-} 
-
-int get_k(dist)
-{
+	return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 }
 
-/*
-#include <math.h>
+double get_k(double dist)
+{
+	if (dist > 50) return 1.7;
+	else return 1.5;
+}
 
-dist = sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1))
-dist 크기에 따라서 k 값을 리턴하는 get_k 함수
-*/
+double calc_battery(int x1, int y1, int x2, int y2)
+{
+	double dist = calc_dist(x1, y1, x2, y2);
+	double k = get_k(dist);
+	return k * dist;
+}
+
+void build_dist_list()
+{
+	if (head == NULL) return;
+
+    Node* temp = head;
+    int idx = 0;  // 구간 인덱스
+
+	char* stages[] = { "AB", "BC", "CD", "DE" };
+
+    while (temp->rlink != NULL)
+    {
+        int x1 = temp->x, y1 = temp->y;
+        int x2 = temp->rlink->x, y2 = temp->rlink->y;
+
+        double dist = calc_dist(x1, y1, x2, y2);
+        double k = get_k(dist);
+        double battery = calc_battery(x1, y1, x2, y2);
+
+        Dist_node* node = (Dist_node*)malloc(sizeof(Dist_node));
+		node->next = NULL;
+
+        node->x = x1;
+        node->y = y1;
+        node->distance = dist;
+        node->k = k;
+        node->battery_use = battery;
+		node->stage = stages[idx];
+
+        if (dist_head == NULL)
+        {
+            dist_head = node;
+        }
+        else {
+            Dist_node* t = dist_head;
+
+            while (t->next != NULL)
+            {
+                t = t->next;
+            }
+            t->next = node;
+        }
+
+		idx++;
+        temp = temp->rlink;
+        
+    }
+
+}
+
+//void print_dist_list()
+//{
+//    Dist_node* temp = dist_head;
+//
+//    while (temp != NULL)
+//    {
+//        printf("%s | (%d, %d) | dist: %.2f | k: %.1f | battery: %.2f\n",
+//            temp->stage, temp->x, temp->y, temp->distance, temp->k, temp->battery_use);
+//        temp = temp->next;
+//    }
+//}
