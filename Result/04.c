@@ -39,6 +39,8 @@ void fread03() //03.txt읽어와서 리스트 만들기
 	}
 	box = listlen;
 	pre = rhead;
+	for(int i=0;i<4;i++)
+{
 	while ((fscanf(fp1, "%s %lf %lf %lf ", stage, &dist, &K, &battery_use)) == 4)
 	{
 		report_Node* node = (report_Node*)malloc(sizeof(report_Node));
@@ -110,6 +112,7 @@ void fread03() //03.txt읽어와서 리스트 만들기
 			push(top, &listlen,battery_use);
 		}
 	}
+}
 	fclose(fp1);
 	
 }
