@@ -6,16 +6,16 @@ void start_UI()
 {
 	printf("-----Program is Starting-----\n");
 
-	//char* dots[] = { "",".","..","..." };
+	/char* dots[] = { "",".","..","..." };
 
-	//for (int j = 0; j < 2; j++) {
-	//	for (int i = 0; i < 4; i++)
-	//	{
-	//		printf("\rLoading%-3s", dots[i]);
-	//		fflush(stdout);
-	//		Sleep(1000);
-	//	}
-	//}
+	for (int j = 0; j < 2; j++) {
+		for (int i = 0; i < 4; i++)
+		{
+			printf("\rLoading%-3s", dots[i]);
+			fflush(stdout);
+			Sleep(1000);
+		}
+	}
 
 	printf("\nLoading Complete!\n");
 	Sleep(1000);
