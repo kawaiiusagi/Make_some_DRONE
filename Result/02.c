@@ -1,16 +1,26 @@
 #include "drone.h"
 
 Node* head = NULL;
+
 int node_count = 0;
-FILE* fp = NULL;
+
 void read_list()
 {
+	FILE* fp = NULL;
+
+	printf("\n\n----------<Next Step>----------\n");
+	printf("Step 2 : Make Coordinate Linked-List!\n");
+
 	fp = fopen("01.txt", "r");
-	if (fp == NULL)
-	{
-		printf("Cannot read the file\n");
-		return;
-	}
+
+	printf("\n");
+	print_center("UPLOADING files...", 33);
+	loading_bar();
+	printf("\033[A\r                                     \r");
+	printf("\033[A\r                                     \r");
+	printf("Upload success!\n");
+
+
 	int x, y;
 
 	while (fscanf(fp, "%d %d", &x, &y) == 2)
@@ -23,21 +33,38 @@ void read_list()
 		node->llink = NULL;
 
 		if (head == NULL) head = node;
+		
 		else
 		{
-			sort_nodes(head, node);
-			get_node_nums();
+			sort_nodes(node);
 		}
+
 	}
 
-	fclose(fp); //안 닫아두셔서 추가 했습니다
+	get_node_nums();
+	fclose(fp);
+
+	printf("\n");
+	print_center("Making List...", 33);
+	loading_bar();
+	printf("\033[A\r                                    \r");
+	printf("\033[A\r                                    \r");
+	printf("Make List Success!\n");
+
+	show_nodes();
 }
 
-void sort_nodes(Node* head, Node* node)
+void sort_nodes(Node* node)
 {
-	Node* temp = head;
+	if (node->x < head->x)
+	{
+		node->rlink = head;
+		head->llink = node;
+		head = node;
+		return;
+	}
 
-	if (head == node) return; // 자기 자신 순회 예외처리
+	Node* temp = head;
 
 	while (temp->rlink != NULL && temp->rlink->x < node->x)
 	{
@@ -46,7 +73,7 @@ void sort_nodes(Node* head, Node* node)
 	node->rlink = temp->rlink;
 	node->llink = temp;
 
-	if (temp->rlink != NULL) //두 번 하는 이유 -> 양방향 연결리스트이기 때문이다.
+	if (temp->rlink != NULL)
 	{
 		temp->rlink->llink = node;
 	}
@@ -67,40 +94,40 @@ void get_node_nums()
 	node_count = cnt;
 }
 
-void show_nodes(Node* head)
+void show_nodes()
 {
-	if (head == NULL)
-		return;
+	printf("----------<Result>----------\n\n");
+
+	if (head == NULL) return;
+
 	Node* temp = head;
-	fp = fopen("02.txt", "w");
-	if (fp == NULL)
+
+	FILE* fw = NULL;
+
+	fw = fopen("02.txt", "w");
+
+	if (fw == NULL)
 	{
 		printf("Cannot read the file\n");
+		freeList();
 		return;
 	}
 
-	fprintf(fp, "link_pos  x  y\n"); //03.c에서 읽어올 때 한 줄 비우고 시작할 것
+	fprintf(fw, "link_pos  x  y\n"); //03.c에서 읽어올 때 한 줄 비우고 시작할 것
 
 	while (temp->rlink != NULL)
 	{
-		printf("%d(%d,%d)", temp->link_pos, temp->x, temp->y);
-		printf(" ---(x->%d, y->%d)---> ", temp->rlink->x - temp->x, temp->rlink->y - temp->y);
-		fprintf(fp, "%d %d %d\n", temp->link_pos, temp->x, temp->y);
-		temp = temp->rlink;
-		printf("%d(%d,%d)\n", temp->link_pos, temp->x, temp->y);
-	}
-	fclose(fp);
-}
 
-//show_nodes하고 동적 메모리 헤채하는것도 추가하세요 < 완료
-void freeList(Node* head)
-{
-	Node* temp = head->rlink;
-	while (temp != NULL)
-	{
-		head->rlink = temp->rlink;
-		free(temp);
-		temp = head->rlink;
+		printf("[%d](%d,%d)\n", temp->link_pos, temp->x, temp->y);
+		printf("   |--> dx:%d, dy:%d ---> ", temp->rlink->x - temp->x, temp->rlink->y - temp->y);
+		fprintf(fw, "%d %d %d\n", temp->link_pos, temp->x, temp->y);
+		temp = temp->rlink;
+		printf("[%d](%d,%d)\n", temp->link_pos, temp->x, temp->y);
 	}
-	free(head);
+	printf("[%d](%d,%d)\n", temp->link_pos, temp->x, temp->y);
+	fprintf(fw, "%d %d %d\n", temp->link_pos, temp->x, temp->y);
+	fclose(fw);
+
+	system("02.txt");
+	freeList();
 }
