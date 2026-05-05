@@ -4,24 +4,85 @@ int for_check_overlap[Map_size + 1][Map_size + 1] = { 0, };
 
 void start_UI()
 {
-	printf("-----------------\n");
-	printf("*****WELCOME*****\n");
-	printf("START THE MISSION\n");
-	printf("-----------------\n");
-} // starting point
+	printf("-----Program is Starting-----\n");
+
+	//char* dots[] = { "",".","..","..." };
+
+	//for (int j = 0; j < 2; j++) {
+	//	for (int i = 0; i < 4; i++)
+	//	{
+	//		printf("\rLoading%-3s", dots[i]);
+	//		fflush(stdout);
+	//		Sleep(1000);
+	//	}
+	//}
+
+	printf("\nLoading Complete!\n");
+	Sleep(1000);
+	
+
+	input_sys();
+}
+
+void print_center(const char* buf, int width)
+{
+	int len = strlen(buf);
+	int pad = (width - len) / 2;
+
+	printf("%*s%s%*s\n", pad, "", buf, pad, "");
+}
 
 
 void input_sys()
 {
+	int pw_cnt = 0;
+	int pw = 1111;
+	int pw_buf;
+
 	while (1)
 	{
+		if (pw_cnt == 5)
+		{
+			printf("Terminating the program for security reasons.\n");
+			exit(0);
+		}
+
+		printf("\nPlease enter the password. Access is restricted");
+		printf("\n>>> ");
+
+		if (scanf("%d", &pw_buf) != 1 || pw_buf != pw)
+		{
+			printf("Invalid password. Please try again\n");
+			while (getchar() != '\n');
+			pw_cnt++;
+			continue;
+		}
+		else {
+			break;
+		}
+
+	}
+	while (1)
+	{
+		Sleep(500);
+		printf("\nVerified.");
+		
+		Sleep(500);
+
 		int num;
-		printf("\nPlease enter the number you want to do\n");
-		printf("1 : random, 2: Directly, 3 : Read on file\n");
+		printf("\n\n----------<First Step>----------\n");
+		printf("Step 1 : Make Coordinate!\n");
+		printf("Please enter the number of the option you want to select\n\n");
+		printf("=========================\n");
+		print_center("MAIN MENU", 25);
+		printf("=========================\n");
+		printf("  1 : random\n  2 : Directly\n");
+		printf("=========================\n");
+		printf("\n>>> ");
 
 		if (scanf("%d", &num) != 1 || (num != 1 && num != 2 && num != 3))
 		{
-			printf("Please enter correct value");
+			printf("Please enter a valid value.\n");
 			while (getchar() != '\n');
 			continue;
 		}
@@ -36,25 +97,24 @@ void input_sys()
 		case 2:
 			do_direct();
 			break;
-		case 3:
-			do_FILE();
-			break;
 		}
 		break;
 	}
 }
 
-void do_random() 
-{
+void do_random() {
 	int temp_num = 0;
+
 	FILE* fw = NULL;
+
 	while (1)
 	{
-		printf("How many nodes do you want to add? : ");
-		if (scanf("%d", &temp_num) != 1)
+		printf("\nHow many nodes do you want to add? (Max : 10)\n");
+		printf(">>> ");
+		if (scanf("%d", &temp_num) != 1 || temp_num <= 0 || temp_num > 10)
 		{
 
-			printf("Please add correct value\n");
+			printf("Please enter a valid value.\n");
 
 			while (getchar() != '\n');
 
@@ -62,6 +122,14 @@ void do_random()
 		}
 		else break;
 	}
+
+	printf("\n");
+
+	print_center("Making Coordinates...", 33);
+	loading_bar();
+	printf("\033[A\r                                      \r");
+	printf("\033[A\r                                      \r");
+	printf("----------<Result>----------\n");
 
 	getchar();
 
@@ -72,10 +140,14 @@ void do_random()
 	fw = fopen("01.txt", "w");
 	if (fw == NULL)
 	{
-		return 0;
+		return;
 	}
-	RandomStart();
-	for (int i = 0; i < temp_num; i++)
+
+	fprintf(fw, "0 0\n");
+	fprintf(stdout, "Coordinate created successfully. Added coordinate => (0, 0)\n");
+	for_check_overlap[0][0] = 1;
+
+	for (int i = 0; i < temp_num - 1; i++)
 	{
 		while (1)
 		{
@@ -91,15 +163,15 @@ void do_random()
 
 			else
 			{
-				//여기서 이제 파일 읽어오셔서 해주시면 됩니다.
 				fprintf(fw, "%d %d\n", x, y);
-				fprintf(stdout, "create waypoint (%d, %d)\n", x, y);
+				fprintf(stdout, "Coordinate created successfully. Added coordinate => (%d, %d)\n", x, y);
 				break;
 			}
 		}
 
 	}
 	fclose(fw);
+	system("01.txt");
 }
 
 int check_coordinate(int x, int y)
@@ -113,12 +185,96 @@ int check_coordinate(int x, int y)
 
 }
 
-void RandomStart()
+void do_direct()
 {
-	printf("___________________\n");
-	printf("  RANDOM WAYPOINT \n");
-	printf("___________________\n");
+	int cnt = 0;
+
+	FILE* fp = NULL;
+	fp = fopen("01.txt", "w");
+
+	int x, y;
+
+	int num = 0;
+
+	while (1)
+	{
+
+		printf("How many coordinates do you want to add? (MAX : 10)\n");
+		printf(">>> ");
+
+		if (scanf("%d", &num) != 1 || num <= 0 || num > 10)
+		{
+			printf("Please enter a valid value.");
+			while (getchar() != '\n');
+			continue;
+		}
+		else break;
+	}
+
+	fprintf(fp, "0 0\n");
+	fprintf(stdout, "Coordinate created successfully. Added coordinate => (0, 0)\n");
+	for_check_overlap[0][0] = 1;
+
+	while (cnt < num - 1)
+	{
+		printf("Enter X Y [ 1 ~ 100 ] (ex.10 20) >>> ");
+		
+		if (scanf("%d %d", &x, &y) != 2 || x <= 0 || y <= 0 || x > 100 || x > 100 || y > 100)
+		{
+			printf("Please enter a valid value.\n");
+			while (getchar() != '\n');
+			continue;
+		}
+
+		else if (check_coordinate(x, y) == 2)
+		{
+			printf("Duplicate coordinate detected. Please enter again.\n");
+			while (getchar() != '\n');
+			continue;
+		}
+
+		else
+		{
+			fprintf(fp, "%d %d\n", x, y);
+			fprintf(stdout, "Coordinate created successfully. Added coordinate => (%d, %d)\n", x, y);
+			cnt++;
+		}
+
+	}
+	fclose(fp);
+	system("01.txt");
+
 }
 
-void do_direct() {}
-void do_FILE() {}
+void loading_bar() {
+	int bar_size = 5;
+	int total = 30;
+
+	for (int r = 0; r < 2; r++) {
+		for (int i = 0; i <= total - bar_size; i++) {
+
+			printf("\r[");
+
+			for (int j = 0; j < i; j++) printf(" ");
+			for (int j = 0; j < bar_size; j++) printf("=");
+			for (int j = i + bar_size; j < total; j++) printf(" ");
+
+			printf("]");
+			fflush(stdout);
+			Sleep(50);
+		}
+		for (int i = total - bar_size; i >= 0; i--) {
+
+			printf("\r[");
+
+			for (int j = 0; j < i; j++) printf(" ");
+			for (int j = 0; j < bar_size; j++) printf("=");
+			for (int j = i + bar_size; j < total; j++) printf(" ");
+
+			printf("]");
+			fflush(stdout);
+			Sleep(50);
+		}
+	}
+	printf("\n");
+}
