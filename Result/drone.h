@@ -10,10 +10,8 @@
 #include <stdbool.h>
 #include <math.h>
 
-#define Battery_per_move
-#define Enemy_spotted 8
-#define Bomb 1
 #define Map_size 100
+#define FAILURE_PROB 10
 
 typedef struct Node
 {
@@ -64,14 +62,15 @@ extern Node* head;
 
 void start_UI();
 void input_sys();
-void sort_nodes();
+void print_center(const char* str, int width);
+void sort_nodes(Node* node);
 void get_node_nums();
 void do_random();
 void do_direct();
-void do_FILE();
+void loading_bar();
 
-int check_coordinate();
-void freeList(Node* head);
+int check_coordinate(int x, int y);
+void freeList();
 
 //파일 입출력 함수
 void fprint01(FILE*, Node*);
@@ -87,7 +86,8 @@ double calc_dist(int x1, int y1, int x2, int y2);
 double get_k(double dist);
 void reporting();
 void push(reportstack_Node* top, int* listlen, double battery_use);
-void fread03();
+void make_final();
 
-void RandomStart();
+void print_dist_list();
+
 #endif
