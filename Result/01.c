@@ -76,9 +76,13 @@ void input_sys()
 		printf("=========================\n");
 		print_center("MAIN MENU", 25);
 		printf("=========================\n");
+		printf("Starting point is also created\n");
+		printf("  when generating waypoints.\n\n");
+		printf("How to create waypoints?\n");
 		printf("  1 : random\n  2 : Directly\n");
 		printf("=========================\n");
 		printf("\n>>> ");
+
 
 		if (scanf("%d", &num) != 1 || (num != 1 && num != 2 && num != 3))
 		{
