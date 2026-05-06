@@ -194,6 +194,10 @@ void reporting()
 
 		temp = temp->rlink;
 	}
+	if(temp==NULL)//끝에 도착했을 때 자폭했다고 하기
+	{
+		printf("The drone exploded on its own.\nMission completed\n")
+	}
 	fclose(fp);
 
 	report_Node* rtemp = rhead->rlink;
