@@ -8,7 +8,7 @@ void read_node()
 	printf("Step 3 : Make Simulator Dataset!\n");
 
 	printf("\n");
-	print_center("UPLOADING files...", 33);
+	print_center("Reading 02.txt...", 33);
 	loading_bar();
 	printf("\033[A\r                                     \r");
 	printf("\033[A\r                                     \r");
@@ -82,7 +82,7 @@ void build_dist_list()
 	loading_bar();
 	printf("\033[A\r                                     \r");
 	printf("\033[A\r                                     \r");
-	printf("Upload success!\n");
+	printf("Success!\n");
 
 	if (head == NULL) return;
 
@@ -147,6 +147,7 @@ void print_dist_list()
 	double total_dist = 0;
 	double total_battery = 0;
 
+	printf("\n----------<Result>----------\n");
 	printf("%-10s %-10s %-10s %-10s\n", "Stage", "Distance", "K", "Battery");
 	printf("------------------------------------------\n");
 
