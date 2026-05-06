@@ -19,7 +19,7 @@ void start_UI()
 
 	printf("\nLoading Complete!\n");
 	Sleep(1000);
-	
+
 
 	input_sys();
 }
@@ -66,22 +66,25 @@ void input_sys()
 	{
 		Sleep(500);
 		printf("\nVerified.");
-		
+
 		Sleep(500);
 
+		info_UI();
+
 		int num;
-		printf("\n\n----------<First Step>----------\n");
+		printf("\n----------<First Step>----------\n");
 		printf("Step 1 : Make Coordinate!\n");
-		printf("Please enter the number of the option you want to select\n\n");
+		printf("\nPlease enter the number of the option you want to select\n");
+		printf("Starting point(0,0) is also created when generating waypoints.\n\n");
 		printf("=========================\n");
 		print_center("MAIN MENU", 25);
 		printf("=========================\n");
-		printf("Starting point is also created\n");
-		printf("  when generating waypoints.\n\n");
+		
+
 		printf("How to create waypoints?\n");
 		printf("  1 : random\n  2 : Directly\n");
 		printf("=========================\n");
-		printf("\n>>> ");
+		printf(">>> ");
 
 
 		if (scanf("%d", &num) != 1 || (num != 1 && num != 2 && num != 3))
@@ -222,7 +225,7 @@ void do_direct()
 	while (cnt < num - 1)
 	{
 		printf("Enter X Y [ 1 ~ 100 ] (ex.10 20) >>> ");
-		
+
 		if (scanf("%d %d", &x, &y) != 2 || x <= 0 || y <= 0 || x > 100 || x > 100 || y > 100)
 		{
 			printf("Please enter a valid value.\n");
@@ -281,4 +284,53 @@ void loading_bar() {
 		}
 	}
 	printf("\n");
+}
+
+void info_UI()
+{
+	system("cls");
+	Sleep(200);
+
+	printf("============================================================\n");
+	printf("|                                                           |\n");
+	printf("|                                                           |\n");
+	printf("|                                                           |\n");
+	printf("|                ___    ____  ____  _  _  ____              |\n");
+	printf("|               |  _ \\ |  _ \\|    ||  \\| ||  __|            |\n");
+	printf("|               | | | || |_) || || || . ` || |__            |\n");
+	printf("|               | |_/ ||  _ < | || || |\\  ||  __|           |\n");
+	printf("|               |____/ |_| \\_\\|____||_| \\_||____|           |\n");
+	printf("|                                                           |\n");
+	printf("|                     S I M U L A T O R                     |\n");
+	printf("|                                                           |\n");
+	printf("============================================================\n");
+	Sleep(500);
+
+	printf("\n");
+	printf("   Autonomous Drone Path Planning & Battery Simulator\n");
+	printf("   Version 1.0\n");
+	printf("\n");
+
+	Sleep(500);
+
+	printf("   [>] Waypoint generation ( random / manual )\n");
+	Sleep(150);
+	printf("   [>] Optimal path calculation\n");
+	Sleep(150);
+	printf("   [>] Battery consumption simulation\n");
+	Sleep(150);
+	printf("   [>] State monitoring --->  NORMAL / ERROR / FAILURE / RECOVERY\n");
+	Sleep(150);
+
+	printf("\n");
+	Sleep(300);
+
+	char bbuf[10];
+
+	printf("   Press Enter to continue...");
+	scanf("%c", &bbuf);
+	fflush(stdout);
+
+	while (getchar() != '\n' && !feof(stdin));
+
 }
