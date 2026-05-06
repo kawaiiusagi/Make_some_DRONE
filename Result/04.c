@@ -194,10 +194,7 @@ void reporting()
 
 		temp = temp->rlink;
 	}
-	if(temp==NULL)//끝에 도착했을 때 자폭했다고 하기
-	{
-		printf("The drone exploded on its own.\nMission completed\n")
-	}
+	drone_Explosion();
 	fclose(fp);
 
 	report_Node* rtemp = rhead->rlink;
@@ -244,4 +241,12 @@ void push(reportstack_Node* top, int* listlen, double battery_use)
 	temp->used_battery = battery_use;
 	temp->rlink = top->rlink;
 	top->rlink = temp;
+}
+
+void drone_Explosion()
+{
+	if(temp==NULL)//끝에 도착했을 때 자폭했다고 하기
+	{
+		printf("The drone exploded on its own.\nMission completed\n");
+	}
 }
