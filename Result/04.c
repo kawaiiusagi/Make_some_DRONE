@@ -58,7 +58,7 @@ void make_final()
 	printf("Step 4 : Running Simulator!\n");
 
 	printf("\n");
-	print_center("UPLOADING files...", 33);
+	print_center("Reading 03.txt...", 33);
 	loading_bar();
 	printf("\033[A\r                                     \r");
 	printf("\033[A\r                                     \r");
@@ -123,11 +123,17 @@ void reporting()
 		return;
 	}
 
+	print_center("SIMULATING...", 33);
+	loading_bar();
+	printf("\033[A\r                                     \r");
+	printf("\033[A\r                                     \r");
+	printf("SUCCESS!\n");
+
 	printf("\n----------<FINAL RESULT>----------\n");
 
 	const char* header_format = "%-14s %-10s %-8s %-15s %-15s %-12s %-20s\n";
 	const char* row_format = "%-14s %-10.1f %-8.1f %-15.1f %-15.1f %-12s %-20s\n";
-	const char* track_format  = "%-14s %-10s %-8s %-15s %-15.1f %-12s %-20s\n";
+	const char* track_format = "%-14s %-10s %-8s %-15s %-15.1f %-12s %-20s\n";
 
 	fprintf(fp, header_format, "Stage", "Dist(m)", "K", "Battery", "Total", "State", "Return Path");
 	fprintf(stdout, header_format, "Stage", "Dist(m)", "K", "Battery", "Total", "State", "Return Path");
@@ -190,7 +196,7 @@ void reporting()
 		}
 
 		fprintf(fp, row_format, temp->stage, temp->dist, temp->K, temp->battery_use, used_battery, droneState[temp->state], "-");
-		fprintf(stdout, row_format, temp->stage, temp->dist, temp->K,temp->battery_use, used_battery, droneState[temp->state], "-");
+		fprintf(stdout, row_format, temp->stage, temp->dist, temp->K, temp->battery_use, used_battery, droneState[temp->state], "-");
 
 		temp = temp->rlink;
 	}
@@ -219,7 +225,7 @@ void reporting()
 	top = NULL;
 	system("04.txt");
 
-	printf("Thank you for using.");
+	printf("\nThank you for using.");
 	exit(0);
 }
 
@@ -245,8 +251,20 @@ void push(reportstack_Node* top, int* listlen, double battery_use)
 
 void drone_Explosion(report_Node* temp)
 {
-	if(temp==NULL)//끝에 도착했을 때 자폭했다고 하기
+	if (temp == NULL)
 	{
 		printf("The drone exploded on its own.\nMission completed\n");
+		return;
+	}
+
+	if (temp->state == 2)
+	{
+		printf("\n[FAILURE] Aircraft malfunction. The drone has crashed.\n");
+		printf("Mission failed.\n");
+	}
+	else if (temp->state == 1)
+	{
+		printf("\n[ERROR] Battery depleted. The drone is returning to base.\n");
+		printf("Mission failed.\n");
 	}
 }
