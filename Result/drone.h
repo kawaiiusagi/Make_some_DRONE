@@ -90,6 +90,6 @@ void make_final();
 
 void print_dist_list();
 
-void drone_Explosion();
+void drone_Explosion(report_Node* );
 
 #endif
