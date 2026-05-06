@@ -87,7 +87,7 @@ void input_sys()
 		printf(">>> ");
 
 
-		if (scanf("%d", &num) != 1 || (num != 1 && num != 2 && num != 3))
+		if (scanf("%d", &num) != 1 || (num != 1 && num != 2))
 		{
 			printf("Please enter a valid value.\n");
 			while (getchar() != '\n');
