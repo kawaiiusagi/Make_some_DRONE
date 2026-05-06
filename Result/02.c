@@ -14,7 +14,7 @@ void read_list()
 	fp = fopen("01.txt", "r");
 
 	printf("\n");
-	print_center("UPLOADING files...", 33);
+	print_center("Reading 01.txt...", 33);
 	loading_bar();
 	printf("\033[A\r                                     \r");
 	printf("\033[A\r                                     \r");
@@ -49,7 +49,7 @@ void read_list()
 	loading_bar();
 	printf("\033[A\r                                    \r");
 	printf("\033[A\r                                    \r");
-	printf("Make List Success!\n");
+	printf("Success!\n");
 
 	show_nodes();
 }
@@ -96,7 +96,7 @@ void get_node_nums()
 
 void show_nodes()
 {
-	printf("----------<Result>----------\n\n");
+	printf("\n----------<Result>----------\n");
 
 	if (head == NULL) return;
 
@@ -113,7 +113,7 @@ void show_nodes()
 		return;
 	}
 
-	fprintf(fw, "link_pos  x  y\n"); //03.c에서 읽어올 때 한 줄 비우고 시작할 것
+	fprintf(fw, "link_pos  x  y\n");
 
 	while (temp->rlink != NULL)
 	{
