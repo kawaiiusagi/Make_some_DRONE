@@ -79,7 +79,7 @@ void input_sys()
 		printf("=========================\n");
 		print_center("MAIN MENU", 25);
 		printf("=========================\n");
-		
+
 
 		printf("How to create waypoints?\n");
 		printf("  1 : random\n  2 : Directly\n");
@@ -295,10 +295,10 @@ void info_UI()
 	printf("|                                                           |\n");
 	printf("|                                                           |\n");
 	printf("|                                                           |\n");
-	printf("|                ___    ____  ____  _  _  ____              |\n");
-	printf("|               |  _ \\ |  _ \\|    ||  \\| ||  __|            |\n");
+	printf("|                ___    ____   ____  __  _  ____            |\n");
+	printf("|               |  _ \\ |  _ \\ |    ||  \\| ||  __|           |\n");
 	printf("|               | | | || |_) || || || . ` || |__            |\n");
-	printf("|               | |_/ ||  _ < | || || |\\  ||  __|           |\n");
+	printf("|               | |_/ ||  _ < | || || |\\  || |__            |\n");
 	printf("|               |____/ |_| \\_\\|____||_| \\_||____|           |\n");
 	printf("|                                                           |\n");
 	printf("|                     S I M U L A T O R                     |\n");
