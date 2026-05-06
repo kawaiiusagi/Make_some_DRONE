@@ -194,7 +194,7 @@ void reporting()
 
 		temp = temp->rlink;
 	}
-	drone_Explosion();
+	drone_Explosion(temp);
 	fclose(fp);
 
 	report_Node* rtemp = rhead->rlink;
@@ -243,7 +243,7 @@ void push(reportstack_Node* top, int* listlen, double battery_use)
 	top->rlink = temp;
 }
 
-void drone_Explosion()
+void drone_Explosion(report_Node* temp)
 {
 	if(temp==NULL)//끝에 도착했을 때 자폭했다고 하기
 	{
