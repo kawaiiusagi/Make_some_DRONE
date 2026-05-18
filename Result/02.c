@@ -8,17 +8,61 @@ void read_list()
 {
 	FILE* fp = NULL;
 
-	printf("\n\n----------<Next Step>----------\n");
-	printf("Step 2 : Make Coordinate Linked-List!\n");
-
-	fp = fopen("01.txt", "r");
+	system("cls");
+	Sleep(500);
 
 	printf("\n");
-	print_center("Reading 01.txt...", 33);
+	printf("  +================================================+\n");
+	printf("  |         DRONE MISSION SETUP                    |\n");
+	printf("  |           [ STEP 2 of 4 ]                      |\n");
+	printf("  +================================================+\n");
+	printf("\n");
+	printf("  +------------------------------------------------+\n");
+	printf("  |  Mission : Optimal Path Calculation            |\n");
+	printf("  |  Input   : Waypoint coordinates from Step 1    |\n");
+	printf("  +------------------------------------------------+\n");
+	printf("\n");
+
+	Sleep(500);
+	printf("  +------------------------------------------------+\n");
+	printf("  |  NOTE: File format must be as follows          |\n");
+	printf("  |                                                |\n");
+	printf("  |    x y  (one coordinate per line)              |\n");
+	printf("  |                                                |\n");
+	printf("  |  Example:                                      |\n");
+	printf("  |    10 20                                       |\n");
+	printf("  |    35 47                                       |\n");
+	printf("  |    60 80                                       |\n");
+	printf("  +------------------------------------------------+\n");
+	printf("\n");
+
+	Sleep(500);
+	while (1)
+	{
+		printf("  Please enter the file name(include the file extension)\n");
+		printf("  >>> ");
+
+		char buf[100];
+		scanf("%s", buf);
+
+		fp = fopen(buf, "r");
+
+		if (fp == NULL)
+		{
+			printf("Cannot read the file.\n");
+			continue;
+		}
+		else break;
+
+	}
+
+	printf("\n");
+
+	print_center("  Reading FILE...", 33);
 	loading_bar();
-	printf("\033[A\r                                     \r");
-	printf("\033[A\r                                     \r");
-	printf("Upload success!\n");
+	printf("  \033[A\r                                     \r");
+	printf("  \033[A\r                                     \r");
+	printf("  Upload success!\n");
 
 
 	int x, y;
@@ -33,7 +77,7 @@ void read_list()
 		node->llink = NULL;
 
 		if (head == NULL) head = node;
-		
+
 		else
 		{
 			sort_nodes(node);
@@ -45,11 +89,11 @@ void read_list()
 	fclose(fp);
 
 	printf("\n");
-	print_center("Making List...", 33);
+	print_center("  Making List...", 33);
 	loading_bar();
-	printf("\033[A\r                                    \r");
-	printf("\033[A\r                                    \r");
-	printf("Success!\n");
+	printf("  \033[A\r                                    \r");
+	printf("  \033[A\r                                    \r");
+	printf("  Success!\n\n");
 
 	show_nodes();
 }
@@ -66,7 +110,7 @@ void sort_nodes(Node* node)
 
 	Node* temp = head;
 
-	while (temp->rlink != NULL && temp->rlink->x < node->x)
+	while (temp->rlink != NULL && temp->rlink->x < node->x) //because of pre node
 	{
 		temp = temp->rlink;
 	}
@@ -96,7 +140,16 @@ void get_node_nums()
 
 void show_nodes()
 {
-	printf("\n----------<Result>----------\n");
+	char bbuf[50];
+
+	printf("  Please enter the name of the file to save the linked list result.\n");
+	printf("  (include the file extension)\n");
+	printf("  >>>");
+	scanf("%s", bbuf);
+	getchar();
+
+
+	printf("\n  ----------<Result>----------\n");
 
 	if (head == NULL) return;
 
@@ -104,7 +157,7 @@ void show_nodes()
 
 	FILE* fw = NULL;
 
-	fw = fopen("02.txt", "w");
+	fw = fopen(bbuf, "w");
 
 	if (fw == NULL)
 	{
@@ -118,13 +171,13 @@ void show_nodes()
 	while (temp->rlink != NULL)
 	{
 
-		printf("[%d](%d,%d)\n", temp->link_pos, temp->x, temp->y);
-		printf("   |--> dx:%d, dy:%d ---> ", temp->rlink->x - temp->x, temp->rlink->y - temp->y);
+		printf("  [%d](%d,%d)\n", temp->link_pos, temp->x, temp->y);
+		printf("     |--> dx:%d, dy:%d ---> ", temp->rlink->x - temp->x, temp->rlink->y - temp->y);
 		fprintf(fw, "%d %d %d\n", temp->link_pos, temp->x, temp->y);
 		temp = temp->rlink;
-		printf("[%d](%d,%d)\n", temp->link_pos, temp->x, temp->y);
+		printf("  [%d](%d,%d)\n", temp->link_pos, temp->x, temp->y);
 	}
-	printf("[%d](%d,%d)\n", temp->link_pos, temp->x, temp->y);
+	printf("  [%d](%d,%d)\n", temp->link_pos, temp->x, temp->y);
 	fprintf(fw, "%d %d %d\n", temp->link_pos, temp->x, temp->y);
 	fclose(fw);
 
