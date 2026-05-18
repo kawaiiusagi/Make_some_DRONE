@@ -72,12 +72,10 @@ void loading_bar();
 int check_coordinate(int x, int y);
 void freeList();
 
-//파일 입출력 함수
 void fprint01(FILE*, Node*);
 
 void show_nodes();
 void read_list();
-//void make_list(Node* head);
 void read_node();
 void build_dist_list();
 double calc_battery(int x1, int y1, int x2, int y2);
@@ -92,5 +90,6 @@ void print_dist_list();
 
 void drone_Explosion(report_Node*);
 void info_UI();
+void choose_UI();
 
 #endif
