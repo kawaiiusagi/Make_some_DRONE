@@ -4,10 +4,10 @@ int main()
 {
 	start_UI();
 
-	read_list();
+	while (1)
+	{
+		choose_UI();
 
-	read_node();
-
-	make_final();
+	}
 	return 0;
 }
