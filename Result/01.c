@@ -20,21 +20,6 @@ void start_UI()
 	printf("\nLoading Complete!\n");
 	Sleep(1000);
 
-
-	input_sys();
-}
-
-void print_center(const char* buf, int width)
-{
-	int len = strlen(buf);
-	int pad = (width - len) / 2;
-
-	printf("%*s%s%*s\n", pad, "", buf, pad, "");
-}
-
-
-void input_sys()
-{
 	int pw_cnt = 0;
 	int pw = 1111;
 	int pw_buf;
@@ -61,35 +46,65 @@ void input_sys()
 			break;
 		}
 
-	}
-	while (1)
-	{
 		Sleep(500);
 		printf("\nVerified.");
 
-		Sleep(500);
+	}
 
-		info_UI();
+	info_UI();
+
+	choose_UI();
+}
+
+void print_center(const char* buf, int width)
+{
+	int len = strlen(buf);
+	int pad = (width - len) / 2;
+
+	printf("%*s%s%*s\n", pad, "", buf, pad, "");
+}
+
+
+void input_sys()
+{
+	system("cls");
+	Sleep(500);
+
+	printf("\n");
+	printf("  +======================================+\n");
+	printf("  |         DRONE MISSION SETUP          |\n");
+	printf("  |           [ STEP 1 of 4 ]            |\n");
+	printf("  +======================================+\n");
+
+	Sleep(500);
+
+	printf("\n");
+	printf("  +--------------------------------------+\n");
+	printf("  |  Mission : Waypoint Generation       |\n");
+	printf("  |  Origin  : (0, 0) auto-included      |\n");
+	printf("  +--------------------------------------+\n");
+	printf("\n");
+
+	Sleep(500);
+
+	while (1)
+	{
+
+		printf("  How would you like to generate waypoints?\n");
+		printf("\n");
+		printf("  +-------------------------------------+\n");
+		printf("  |  [1]  Random Generation             |\n");
+		printf("  |  [2]  Manual Input                  |\n");
+		printf("  +-------------------------------------+\n");
+		printf("\n");
 
 		int num;
-		printf("\n----------<First Step>----------\n");
-		printf("Step 1 : Make Coordinate!\n");
-		printf("\nPlease enter the number of the option you want to select\n");
-		printf("Starting point(0,0) is also created when generating waypoints.\n\n");
-		printf("=========================\n");
-		print_center("MAIN MENU", 25);
-		printf("=========================\n");
-
-
-		printf("How to create waypoints?\n");
-		printf("  1 : random\n  2 : Directly\n");
-		printf("=========================\n");
-		printf(">>> ");
+		printf("  >>> ");
 
 
 		if (scanf("%d", &num) != 1 || (num != 1 && num != 2))
 		{
-			printf("Please enter a valid value.\n");
+			printf("\n  Please enter a valid value.\n");
 			while (getchar() != '\n');
 			continue;
 		}
@@ -116,8 +131,8 @@ void do_random() {
 
 	while (1)
 	{
-		printf("\nHow many nodes do you want to add? (Max : 10)\n");
-		printf(">>> ");
+		printf("\n  How many nodes do you want to add? (Max : 10)\n");
+		printf("  >>> ");
 		if (scanf("%d", &temp_num) != 1 || temp_num <= 0 || temp_num > 10)
 		{
 
@@ -198,6 +213,12 @@ void do_direct()
 
 	FILE* fp = NULL;
 	fp = fopen("01.txt", "w");
+
+	if (fp == NULL)
+	{
+		printf("Cannot open the file\n");
+		return;
+	}
 
 	int x, y;
 
@@ -308,7 +329,7 @@ void info_UI()
 
 	printf("\n");
 	printf("   Autonomous Drone Path Planning & Battery Simulator\n");
-	printf("   Version 1.0\n");
+	printf("   Version 1.1.0\n");
 	printf("\n");
 
 	Sleep(500);
@@ -328,9 +349,106 @@ void info_UI()
 	char bbuf[10];
 
 	printf("   Press Enter to continue...");
-	scanf("%c", &bbuf);
+	while (getchar() != '\n');
+	getchar();	
 	fflush(stdout);
 
-	while (getchar() != '\n' && !feof(stdin));
+	//to ask how to solve buffer problem using std.
+	//fflush(stdout);
+
+
+
+}
+
+void choose_UI()
+{
+	char buf[30];
+
+	system("cls");
+	Sleep(500);
+
+	printf("  +================================================+\n");
+	printf("  |        DRONE SIMULATION SYSTEM v1.0           |\n");
+	printf("  +================================================+\n");
+
+	Sleep(500);
+	printf("\n");
+	printf("  +------------------------------------------------+\n");
+	printf("  |  [1]  Waypoint Generation                      |\n");
+	printf("  |  [2]  Optimal Path Calculation                 |\n");
+	printf("  |  [3]  Battery Consumption Simulation           |\n");
+	printf("  |  [4]  State Monitoring                         |\n");
+	printf("  +------------------------------------------------+\n");
+	printf("\n");
+
+	Sleep(500);
+
+	while (1)
+	{
+		printf("  Select a stage to begin  [1-4]\n");
+		printf("  Type 'help' for detailed descriptions\n");
+		printf("  If you want to quit, please enter 'q'\n");
+
+		printf("\n");
+		printf("  >>> ");
+		scanf("%s", buf);
+
+		if (strcmp(buf, "help") == 0)
+		{
+			printf("\n");
+			printf("  +================================================+\n");
+			printf("  |              DETAILED DESCRIPTION              |\n");
+			printf("  +================================================+\n");
+			printf("\n");
+			printf("  [1] Waypoint Generation\n");
+			printf("      Define mission destinations either randomly or\n");
+			printf("      manually to establish the drone's flight targets.\n");
+			printf("\n");
+			printf("  [2] Optimal Path Calculation\n");
+			printf("      Compute the most efficient route connecting all\n");
+			printf("      waypoints to minimize travel distance and time.\n");
+			printf("\n");
+			printf("  [3] Battery Consumption Simulation\n");
+			printf("      Model and track the drone's energy usage\n");
+			printf("      throughout the mission based on calculated path.\n");
+			printf("\n");
+			printf("  [4] State Monitoring\n");
+			printf("      Continuously observe and report the drone's\n");
+			printf("      status : NORMAL / ERROR / FAILURE / RECOVERY\n");
+			printf("\n");
+			continue;
+		}
+		else if (strcmp(buf, "1") == 0)
+		{
+			input_sys();
+			break;
+		}
+		else if (strcmp(buf, "2") == 0)
+		{
+			read_list();
+			break;
+		}
+		else if (strcmp(buf, "3") == 0)
+		{
+			read_node();
+			break;
+		}
+		else if (strcmp(buf, "4") == 0)
+		{
+			make_final();
+			break;
+		}
+		else if (strcmp(buf, "q") == 0)
+		{
+			printf("\n===<Thank you for using>===\n");
+			exit(0);
+		}
+		else {
+			printf("Invalid input. Please enter 1 - 4 or help.\n\n");
+			while (getchar() != '\n');
+			continue;
+
+		}
+	}
 
 }
