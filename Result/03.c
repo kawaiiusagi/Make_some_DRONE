@@ -4,24 +4,63 @@ Dist_node* dist_head = NULL;
 
 void read_node()
 {
-	printf("\n\n----------<Next Step>----------\n");
-	printf("Step 3 : Make Simulator Dataset!\n");
+	system("cls");
+	Sleep(500);
 
 	printf("\n");
-	print_center("Reading 02.txt...", 33);
+	printf("  +================================================+\n");
+	printf("  |         DRONE MISSION SETUP                    |\n");
+	printf("  |           [ STEP 3 of 4 ]                      |\n");
+	printf("  +================================================+\n");
+	printf("\n");
+	printf("  +------------------------------------------------+\n");
+	printf("  |  Mission : Distance & Battery Calculation      |\n");
+	printf("  |  Input   : Sorted waypoint list from Step 2    |\n");
+	printf("  +------------------------------------------------+\n");
+	printf("\n");
+
+	Sleep(500);
+	printf("  +------------------------------------------------+\n");
+	printf("  |  NOTE: File format must be as follows          |\n");
+	printf("  |                                                |\n");
+	printf("  |    ID x y  (one waypoint per line)             |\n");
+	printf("  |                                                |\n");
+	printf("  |  Example:                                      |\n");
+	printf("  |    link_pos  x  y                              |\n");
+	printf("  |    0  0  0                                     |\n");
+	printf("  |    1  10 20                                    |\n");
+	printf("  +------------------------------------------------+\n");
+	printf("\n");
+
+	FILE* fp = NULL;
+
+	Sleep(500);
+	while (1)
+	{
+		printf("  Please enter the file name(include the file extension)\n");
+		printf("  >>> "); 
+
+		char buf[100];
+		scanf("%s", buf);
+
+		fp = fopen(buf, "r");
+
+		if (fp == NULL)
+		{
+			printf("Cannot read the file.\n");
+			continue;
+		}
+		else break;
+
+	}
+	
+	print_center("Uploading...", 33);
 	loading_bar();
 	printf("\033[A\r                                     \r");
 	printf("\033[A\r                                     \r");
-	printf("Upload success!\n");
+	printf("  Upload success!\n\n");
 
 	head = NULL;
-
-	FILE* fp = fopen("02.txt", "r");
-	if (fp == NULL)
-	{
-		printf("Cannot read the flle\n");
-		return;
-	}
 
 	char buf[50];
 	fgets(buf, sizeof(buf), fp);
@@ -82,7 +121,7 @@ void build_dist_list()
 	loading_bar();
 	printf("\033[A\r                                     \r");
 	printf("\033[A\r                                     \r");
-	printf("Success!\n");
+	printf("  Success!\n\n");
 
 	if (head == NULL) return;
 
@@ -135,13 +174,17 @@ void build_dist_list()
 
 void print_dist_list()
 {
-	FILE* fp = fopen("03.txt", "w");
-	if (fp == NULL)
-	{
-		printf("Cannot open 03.txt\n");
-		freeList();
-		return;
-	}
+	FILE* fw = NULL;
+
+	char bbuf[50];
+
+	printf("  Please enter the name of the file to save the linked list result.\n");
+	printf("  (include the file extension)\n");
+	printf("  >>>");
+	scanf("%s", bbuf);
+	getchar();
+
+	fw = fopen(bbuf, "w");
 
 	Dist_node* temp = dist_head;
 	double total_dist = 0;
@@ -155,19 +198,19 @@ void print_dist_list()
 	{
 		total_dist += temp->distance;
 		total_battery += temp->battery_use;
-		fprintf(fp, "%s %.1f %.1f %.1f\n", temp->stage, temp->distance, temp->k, temp->battery_use);
+		fprintf(fw, "%s %.1f %.1f %.1f\n", temp->stage, temp->distance, temp->k, temp->battery_use);
 		printf("%-10s %-10.1f %-10.1f %-10.1f\n", temp->stage, temp->distance, temp->k, temp->battery_use);
 		temp = temp->next;
 	}
 
-	fprintf(fp, "TOTAL %.1f - %.1f\n", total_dist, total_battery);
+	fprintf(fw, "TOTAL %.1f - %.1f\n", total_dist, total_battery);
 
 	printf("------------------------------------------\n");
 	printf("%-10s %-10.1f %-10s %-10.1f\n", "TOTAL", total_dist, "-", total_battery);
 
-	fclose(fp);
+	fclose(fw);
 	freeList();
-	system("03.txt");
+	system(bbuf);
 }
 
 void freeList()
