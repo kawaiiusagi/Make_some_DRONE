@@ -24,32 +24,32 @@ void start_UI()
 	int pw = 1111;
 	int pw_buf;
 
-	while (1)
-	{
-		if (pw_cnt == 5)
-		{
-			printf("Terminating the program for security reasons.\n");
-			exit(0);
-		}
+	//while (1)
+	//{
+	//	if (pw_cnt == 5)
+	//	{
+	//		printf("Terminating the program for security reasons.\n");
+	//		exit(0);
+	//	}
 
-		printf("\nPlease enter the password. Access is restricted");
-		printf("\n>>> ");
+	//	printf("\nPlease enter the password. Access is restricted");
+	//	printf("\n>>> ");
 
-		if (scanf("%d", &pw_buf) != 1 || pw_buf != pw)
-		{
-			printf("Invalid password. Please try again\n");
-			while (getchar() != '\n');
-			pw_cnt++;
-			continue;
-		}
-		else {
-			break;
-		}
+	//	if (scanf("%d", &pw_buf) != 1 || pw_buf != pw)
+	//	{
+	//		printf("Invalid password. Please try again\n");
+	//		while (getchar() != '\n');
+	//		pw_cnt++;
+	//		continue;
+	//	}
+	//	else {
+	//		break;
+	//	}
 
-		Sleep(500);
-		printf("\nVerified.");
+	//	Sleep(500);
+	//	printf("\nVerified.");
 
-	}
+	//}
 
 	info_UI();
 
