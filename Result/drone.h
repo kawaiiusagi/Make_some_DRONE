@@ -9,9 +9,15 @@
 #include <windows.h>
 #include <stdbool.h>
 #include <math.h>
+#include <stdarg.h>
 
 #define Map_size 100
-#define FAILURE_PROB 10
+#define FAILURE_PROB 5
+#define MAX_waypoint 10
+
+typedef enum {
+	Normal = 0, Error = 1, Failure = 2, Recovery  = 3
+} DronState;
 
 typedef struct Node
 {
@@ -48,6 +54,14 @@ typedef struct reportstack_Node {
 	struct reportstack_Node* rlink;
 }reportstack_Node;
 
+typedef struct TreeNode
+{
+	struct TreeNode* rlink;
+	struct TreeNode* llink;
+	int x, y;
+	int idx;
+} TreeNode;
+
 extern Node* head;
 
 //typedef struct Stack
@@ -77,6 +91,7 @@ void fprint01(FILE*, Node*);
 void show_nodes();
 void read_list();
 void read_node();
+void dfs_order(TreeNode* node, int* path_order, int* path_cnt);
 void build_dist_list();
 double calc_battery(int x1, int y1, int x2, int y2);
 double calc_dist(int x1, int y1, int x2, int y2);
@@ -91,5 +106,6 @@ void print_dist_list();
 void drone_Explosion(report_Node*);
 void info_UI();
 void choose_UI();
+void fprint_both(FILE* fp, const char* fmt, ...);
 
 #endif
