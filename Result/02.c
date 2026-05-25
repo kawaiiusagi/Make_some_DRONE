@@ -1,6 +1,7 @@
 #include "drone.h"
 
 Node* head = NULL;
+TreeNode* thead = NULL;
 
 int node_count = 0;
 
@@ -76,7 +77,11 @@ void read_list()
 		node->rlink = NULL;
 		node->llink = NULL;
 
-		if (head == NULL) head = node;
+		if (head == NULL)
+		{
+			head = node;
+			thead = node;
+		}
 
 		else
 		{
@@ -98,8 +103,11 @@ void read_list()
 	show_nodes();
 }
 
+
+
 void sort_nodes(Node* node)
 {
+
 	if (node->x < head->x)
 	{
 		node->rlink = head;
@@ -122,6 +130,7 @@ void sort_nodes(Node* node)
 		temp->rlink->llink = node;
 	}
 	temp->rlink = node;
+	
 }
 
 void get_node_nums()
