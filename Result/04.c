@@ -7,12 +7,34 @@ char bbuf[50];
 double Maxbattery, battery;
 double used_battery = 0.0;
 
+double battery_total_low = 1500.0;
+
+double dist_total = 0.0;
+double total_charge_time = 0.0;
+int error_cnt = 0;
+int mission_count = 0;
+
+double battery_older_state = 0.015;
+double charge_coeff = 0.5;
+
 char* droneState[] = { "NORMAL", "ERROR", "FAILURE", "RECOVERY" };
 char* pointName[] = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J" };
 
 reportstack_Node* top = NULL;
 report_Node* rhead = NULL;
 int listlen = 0;
+
+void print_both(FILE* fp, const char* f, ...)
+{
+    va_list args;
+    va_start(args, f);
+    vfprintf(fp, f, args);
+    va_end(args);
+
+    va_start(args, f);
+    vfprintf(stdout, f, args);
+    va_end(args);
+}
 
 void push(reportstack_Node* top, int* listlen, double battery_use)
 {
@@ -28,7 +50,7 @@ void push(reportstack_Node* top, int* listlen, double battery_use)
     temp->stage = (char*)malloc(strlen(pointName[*listlen]) + 1);
     strcpy(temp->stage, pointName[*listlen]);
 
-    (*listlen)++;
+    (*listlen)++; //to save info after func end
     temp->used_battery = battery_use;
     temp->rlink = top->rlink;
     top->rlink = temp;
@@ -42,12 +64,12 @@ void drone_Explosion(report_Node* temp)
         return;
     }
 
-    if (temp->state == 2)
+    if (temp->state == Failure)
     {
         printf("\n[FAILURE] Aircraft malfunction. The drone has crashed.\n");
         printf("Mission failed.\n");
     }
-    else if (temp->state == 1)
+    else if (temp->state == Error)
     {
         printf("\n[ERROR] Battery depleted. The drone is returning to base.\n");
         printf("Mission failed.\n");
@@ -60,7 +82,7 @@ void reporting()
     if (fp == NULL)
     {
         printf("  Cannot open the file.\n");
-
+        // report node = what & reportstack_Node = where
         report_Node* temp = rhead->rlink;
         while (temp != NULL)
         {
@@ -85,10 +107,8 @@ void reporting()
         return;
     }
 
-    fprintf(fp, "%-14s %-10s %-8s %-15s %-15s %-12s %-20s\n", "Stage", "Dist(m)", "K", "Battery", "Total", "State", "Return Path");
-    fprintf(stdout, "%-14s %-10s %-8s %-15s %-15s %-12s %-20s\n", "Stage", "Dist(m)", "K", "Battery", "Total", "State", "Return Path");
-    fprintf(fp, "-----------------------------------------------------------------------------------------\n");
-    fprintf(stdout, "-----------------------------------------------------------------------------------------\n");
+    print_both(fp, "%-14s %-10s %-8s %-15s %-15s %-12s %-20s\n", "Stage", "Dist(m)", "K", "Battery", "Total", "State", "Return Path");
+    print_both(fp, "-----------------------------------------------------------------------------------------\n");
 
     report_Node* temp = rhead->rlink;
     used_battery = 0.0;
@@ -97,14 +117,7 @@ void reporting()
     {
         used_battery += temp->battery_use;
 
-        if (temp->state == 2)
-        {
-            fprintf(fp, "%-14s %-10.1f %-8.1f %-15.1f %-15.1f %-12s %-20s\n", temp->stage, temp->dist, temp->K, temp->battery_use, used_battery, droneState[temp->state], "MISSION FAILED");
-            fprintf(stdout, "%-14s %-10.1f %-8.1f %-15.1f %-15.1f %-12s %-20s\n", temp->stage, temp->dist, temp->K, temp->battery_use, used_battery, droneState[temp->state], "MISSION FAILED");
-            break;
-        }
-
-        if (temp->state == 1)
+        if (temp->state == Error)
         {
             fprintf(fp, "%-14s %-10.1f %-8.1f %-15.1f %-15.1f %-12s %c->", temp->stage, temp->dist, temp->K, temp->battery_use, used_battery, droneState[temp->state], temp->stage[1]);
             printf("%-14s %-10.1f %-8.1f %-15.1f %-15.1f %-12s %c->", temp->stage, temp->dist, temp->K, temp->battery_use, used_battery, droneState[temp->state], temp->stage[1]);
@@ -143,22 +156,58 @@ void reporting()
             break;
         }
 
-        fprintf(fp, "%-14s %-10.1f %-8.1f %-15.1f %-15.1f %-12s %-20s\n", temp->stage, temp->dist, temp->K, temp->battery_use, used_battery, droneState[temp->state], "-");
-        fprintf(stdout, "%-14s %-10.1f %-8.1f %-15.1f %-15.1f %-12s %-20s\n", temp->stage, temp->dist, temp->K, temp->battery_use, used_battery, droneState[temp->state], "-");
+        print_both(fp, "%-14s %-10.1f %-8.1f %-15.1f %-15.1f %-12s %-20s\n", temp->stage, temp->dist, temp->K, temp->battery_use, used_battery, droneState[temp->state], "-");
 
         temp = temp->rlink;
     }
 
-    drone_Explosion(temp);
+    if (temp == NULL)
+    {
+        if (top->rlink != NULL)
+        {
+            fprintf(fp, "Return Path : ");
+            printf("Return Path : ");
+
+            reportstack_Node* s = top->rlink;
+            while (s != NULL)
+            {
+                fprintf(fp, "%s", s->stage);
+                printf("%s", s->stage);
+                if (s->rlink != NULL) { fprintf(fp, "->"); printf("->"); }
+                s = s->rlink;
+            }
+            fprintf(fp, "\n");
+            printf("\n");
+
+            while (top->rlink != NULL)
+            {
+                reportstack_Node* cur = top->rlink;
+                if (cur->rlink != NULL)
+                {
+                    used_battery -= cur->used_battery;
+                    fprintf(fp, "%c%c%-12s %-10s %-8s %-15s %-15.1f %-12s %c->%c\n", cur->stage[0], cur->rlink->stage[0], "(Return)", "-", "-", "-", used_battery, "RECOVERY", cur->stage[0], cur->rlink->stage[0]);
+                    printf("%c%c%-12s %-10s %-8s %-15s %-15.1f %-12s %c->%c\n", cur->stage[0], cur->rlink->stage[0], "(Return)", "-", "-", "-", used_battery, "RECOVERY", cur->stage[0], cur->rlink->stage[0]);
+                }
+                top->rlink = cur->rlink;
+                free(cur->stage);
+                free(cur);
+            }
+        }
+        printf("\nMission completed. Drone returned to base.\n");
+    }
+    else
+    {
+        drone_Explosion(temp);
+    }
     fclose(fp);
 
-    report_Node* del_temp = rhead->rlink;
-    while (del_temp != NULL)
+    report_Node* temp_del = rhead->rlink;
+    while (temp_del != NULL)
     {
-        report_Node* next = del_temp->rlink;
-        free(del_temp->stage);
-        free(del_temp);
-        del_temp = next;
+        report_Node* next = temp_del->rlink;
+        free(temp_del->stage);
+        free(temp_del);
+        temp_del = next;
     }
     free(rhead);
     rhead = NULL;
@@ -251,19 +300,25 @@ void make_final()
     fclose(fp);
     fp = NULL;
 
-    int run_count = 0;
-    while (1)
+    int cnt = 100;
+
     {
-        printf("\n  How many simulations? (MAX : 50)\n");
-        printf("  >>> ");
-        if (scanf("%d", &run_count) != 1 || run_count <= 0 || run_count > 50)
+        FILE* pre = fopen(buf, "r");
+        if (pre != NULL)
         {
-            printf("Please enter a valid value.\n");
-            while (getchar() != '\n');
-            continue;
+            char line[200];
+            double dist_tmp, battery;
+            while (fgets(line, sizeof(line), pre))
+            {
+                if (sscanf(line, "TOTAL %lf - %lf", &dist_tmp, &battery) == 2)
+                {
+                    if (battery > 0.0)
+                        battery_total_low = battery * 3.0;
+                    break;
+                }
+            }
+            fclose(pre);
         }
-        getchar();
-        break;
     }
 
     print_center("SIMULATING...", 33);
@@ -274,35 +329,15 @@ void make_final()
 
     srand((unsigned int)time(NULL));
 
-    for (int i = 0; i < run_count; i++)
+    int cycle = 0;
+
+    while (cycle < cnt && battery_total_low > 50.0)
     {
+        cycle++;
         Sleep(500);
-        printf("\n========== [ Simulation %d / %d ] ==========\n", i + 1, run_count);
+        printf("\n========== [ Simulation %d / %d ] ==========\n", cycle, cnt);
 
-        double total_battery = 0;
-
-        FILE* fp_bat = fopen(buf, "r");
-        if (fp_bat == NULL)
-        {
-            printf("Cannot read the file\n");
-            return;
-        }
-
-        char s_stage[10], s_dash[4];
-        double s_dist, s_bat;
-
-        while (fscanf(fp_bat, "%s %lf %s %lf", s_stage, &s_dist, s_dash, &s_bat) == 4)
-        {
-            if (strcmp(s_stage, "TOTAL") == 0)
-            {
-                total_battery = s_bat;
-                break;
-            }
-        }
-        fclose(fp_bat);
-
-        int rand_offset = rand() % (int)(total_battery * 1.5 + 1);
-        Maxbattery = total_battery + rand_offset;
+        Maxbattery = battery_total_low;
         battery = Maxbattery;
 
         listlen = 0;
@@ -341,47 +376,84 @@ void make_final()
             node->battery_use = battery_use;
             node->rlink = NULL;
 
-            int fail_roll = rand() % 100;
+            battery -= battery_use;
+            push(top, &listlen, battery_use);
 
-            if (pre->state == 1 || pre->state == 2)
+            if (pre->state == Error)
             {
-                state = 3;
-            }
-            else if (fail_roll < FAILURE_PROB)
-            {
-                state = 2;
+                state = Recovery;
             }
             else if (battery < Maxbattery / 2)
             {
-                state = 1;
+                state = Error;
             }
             else
             {
-                state = 0;
+                state = Normal;
             }
 
             node->state = state;
             node->event = 0;
             pre->rlink = node;
             pre = node;
-            battery -= battery_use;
-            push(top, &listlen, battery_use);
 
-            if (state == 1 || state == 2) break;
+            if (state == Error) break;
         }
 
         fclose(fp);
 
-        FILE* f_sep = fopen(bbuf, "a");
-        if (f_sep != NULL)
+        FILE* sep = fopen(bbuf, "a");
+        if (sep != NULL)
         {
-            fprintf(f_sep, "\n========== [ Simulation %d / %d ] ==========\n", i + 1, run_count);
-            fclose(f_sep);
+            fprintf(sep, "\n========== [ Simulation %d / %d ] ==========\n", cycle, cnt);
+            fclose(sep);
+        }
+
+        report_Node* last = rhead->rlink;
+        while (last != NULL && last->rlink != NULL) last = last->rlink;
+
+        double dist_cycle = 0.0;
+        report_Node* r = rhead->rlink;
+        while (r != NULL) { dist_cycle += r->dist; r = r->rlink; }
+
+        mission_count++;
+
+        if (last != NULL && last->state == Error)
+        {
+            error_cnt++;
+            total_charge_time += (Maxbattery - battery) * charge_coeff;
+            battery_total_low -= dist_cycle * battery_older_state;
+        }
+        else
+        {
+            dist_total += dist_cycle;
+            battery_total_low -= dist_cycle * 2 * battery_older_state;
         }
 
         reporting();
     }
 
+    double MTBF = (error_cnt > 0) ? dist_total / error_cnt : 0.0;
+    double MTTR = (error_cnt > 0) ? total_charge_time / error_cnt : 0.0;
+    double availability = (MTBF + MTTR > 0) ? MTBF / (MTBF + MTTR) * 100.0 : 100.0;
+
+    FILE* fa = fopen(bbuf, "a");
+    if (fa != NULL)
+    {
+        fprintf(fa, "\n========== [ Availability Report ] ==========\n");
+        fprintf(fa, "Total Missions    : %d\n", mission_count);
+        fprintf(fa, "Error Count       : %d\n", error_cnt);
+        fprintf(fa, "MTBF              : %.2f\n", MTBF);
+        fprintf(fa, "MTTR              : %.2f\n", MTTR);
+        fprintf(fa, "Availability      : %.2f%%\n", availability);
+        fclose(fa);
+    }
+    printf("\n========== [ Availability Report ] ==========\n");
+    printf("Total Missions    : %d\n", mission_count);
+    printf("Error Count       : %d\n", error_cnt);
+    printf("MTBF              : %.2f\n", MTBF);
+    printf("MTTR              : %.2f\n", MTTR);
+    printf("Availability      : %.2f%%\n", availability);
 
     system(bbuf);
     printf("\nThank you for using.");
