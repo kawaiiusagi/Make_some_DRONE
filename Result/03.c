@@ -1,6 +1,20 @@
 #include "drone.h"
 
 Dist_node* dist_head = NULL;
+double x_total = 0.0;
+double dist_mst = 0.0;
+int use_mst = 0;
+
+void dfs_order(TreeNode* node, int* path_order, int* path_cnt)
+{
+	path_order[(*path_cnt)++] = node->idx;
+	TreeNode* temp = node->llink;
+	while (temp != NULL)
+	{
+		dfs_order(temp, path_order, path_cnt);
+		temp = temp->rlink;
+	}
+}
 
 void read_node()
 {
@@ -38,7 +52,7 @@ void read_node()
 	while (1)
 	{
 		printf("  Please enter the file name(include the file extension)\n");
-		printf("  >>> "); 
+		printf("  >>> ");
 
 		char buf[100];
 		scanf("%s", buf);
@@ -51,48 +65,145 @@ void read_node()
 			continue;
 		}
 		else break;
-
 	}
-	
+
 	print_center("Uploading...", 33);
 	loading_bar();
 	printf("\033[A\r                                     \r");
 	printf("\033[A\r                                     \r");
 	printf("  Upload success!\n\n");
 
-	head = NULL;
+	char header[50];
+	fgets(header, sizeof(header), fp);
 
-	char buf[50];
-	fgets(buf, sizeof(buf), fp);
+	int wpx[MAX_waypoint], wpy[MAX_waypoint];
+	int node_cnt = 0;
+	int link_pos, x, y;
 
-	int x, y, ID;
-
-	while (fscanf(fp, "%d %d %d", &ID, &x, &y) == 3)
+	while (fscanf(fp, "%d %d %d", &link_pos, &x, &y) == 3)
 	{
-		Node* node = (Node*)malloc(sizeof(Node));
+		wpx[node_cnt] = x;
+		wpy[node_cnt] = y;
+		node_cnt++;
+	}
+	fclose(fp);
 
-		node->x = x;
-		node->y = y;
+	// sum distance of sorted by x
+	x_total = 0.0;
+	for (int i = 0; i < node_cnt - 1; i++)
+		x_total += calc_dist(wpx[i], wpy[i], wpx[i + 1], wpy[i + 1]);
+
+	// MST
+	double dist_min[MAX_waypoint];
+	int parent_idx[MAX_waypoint];
+	bool is_visited[MAX_waypoint];
+
+	for (int i = 0; i < node_cnt; i++)
+	{
+		dist_min[i] = 1000; //never get 1000
+		parent_idx[i] = -1; //to know now initate 
+		is_visited[i] = false;
+	}
+	dist_min[0] = 0.0;
+
+	for (int step = 0; step < node_cnt; step++)
+	{
+		int now = -1;
+		for (int i = 0; i < node_cnt; i++)
+		{
+			if (!is_visited[i] && (now == -1 || dist_min[i] < dist_min[now]))
+				now = i;
+		}
+
+		is_visited[now] = true;
+
+		for (int who = 0; who < node_cnt; who++)
+		{
+			if (!is_visited[who])
+			{
+				double d = calc_dist(wpx[now], wpy[now], wpx[who], wpy[who]);
+				if (d < dist_min[who])
+				{
+					dist_min[who] = d;
+					parent_idx[who] = now;
+				}
+			}
+		}
+	}
+
+	TreeNode nodes[MAX_waypoint];
+	for (int i = 0; i < node_cnt; i++)
+	{
+		nodes[i].x = wpx[i];
+		nodes[i].y = wpy[i];
+		nodes[i].idx = i;
+		nodes[i].llink = NULL;
+		nodes[i].rlink = NULL;
+	}
+
+	for (int i = 1; i < node_cnt; i++)
+	{
+		int p = parent_idx[i];
+		double d_new = calc_dist(nodes[p].x, nodes[p].y, nodes[i].x, nodes[i].y);
+
+		if (nodes[p].llink == NULL)
+		{
+			nodes[p].llink = &nodes[i];
+		}
+		else if (d_new < calc_dist(nodes[p].x, nodes[p].y, nodes[p].llink->x, nodes[p].llink->y))
+		{
+			nodes[i].rlink = nodes[p].llink;
+			nodes[p].llink = &nodes[i];
+		}
+		else
+		{
+			TreeNode* temp = nodes[p].llink;
+			while (temp->rlink != NULL && calc_dist(nodes[p].x, nodes[p].y, temp->rlink->x, temp->rlink->y) <= d_new)
+				temp = temp->rlink;
+			nodes[i].rlink = temp->rlink;
+			temp->rlink = &nodes[i];
+		}
+	}
+
+	// to decide sequence
+	int path_order[MAX_waypoint];
+	int path_cnt = 0;
+	dfs_order(&nodes[0], path_order, &path_cnt);
+
+	// get toatal dist
+	dist_mst = 0.0;
+	for (int i = 0; i < path_cnt - 1; i++)
+	{
+		int a = path_order[i], b = path_order[i + 1];
+		dist_mst += calc_dist(wpx[a], wpy[a], wpx[b], wpy[b]);
+	}
+
+	use_mst = (dist_mst <= x_total);
+
+
+	head = NULL;
+	for (int i = 0; i < node_cnt; i++)
+	{
+		int idx = use_mst ? path_order[i] : i;
+		Node* node = (Node*)malloc(sizeof(Node));
+		node->x = wpx[idx];
+		node->y = wpy[idx];
+		node->link_pos = i;
 		node->llink = NULL;
 		node->rlink = NULL;
-		node->link_pos = ID;
 
 		if (head == NULL)
 		{
 			head = node;
 		}
-		else {
+		else
+		{
 			Node* temp = head;
-
 			while (temp->rlink != NULL)
-			{
 				temp = temp->rlink;
-			}
 			temp->rlink = node;
 		}
 	}
-
-	fclose(fp);
 
 	build_dist_list();
 }
@@ -207,6 +318,29 @@ void print_dist_list()
 
 	printf("------------------------------------------\n");
 	printf("%-10s %-10.1f %-10s %-10.1f\n", "TOTAL", total_dist, "-", total_battery);
+
+	double dif = x_total - dist_mst;
+	double how = (x_total > 0.0) ? dif / x_total * 100.0 : 0.0;
+
+	fprintf(fw, "------------------------------------------\n");
+	fprintf(fw, "  [Path Comparison]\n");
+	fprintf(fw, "  MST Distance   : %.1f\n", dist_mst);
+	fprintf(fw, "  X-Sort Distance: %.1f\n", x_total);
+	if (use_mst)
+		fprintf(fw, "  Used           : MST  (shorter by %.1f, %.1f%%)\n", dif, how);
+	else
+		fprintf(fw, "  Used           : X-Sort  (shorter by %.1f, %.1f%%)\n", -dif, -how);
+	fprintf(fw, "------------------------------------------\n");
+
+	printf("------------------------------------------\n");
+	printf("  [Path Comparison]\n");
+	printf("  MST Distance   : %.1f\n", dist_mst);
+	printf("  X-Sort Distance: %.1f\n", x_total);
+	if (use_mst)
+		printf("  Used           : MST  (shorter by %.1f, %.1f%%)\n", dif, how);
+	else
+		printf("  Used           : X-Sort  (shorter by %.1f, %.1f%%)\n", -dif, -how);
+	printf("------------------------------------------\n");
 
 	fclose(fw);
 	freeList();
