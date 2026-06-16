@@ -1,0 +1,161 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define MAX_QUEUE_SIZE 10
+
+typedef struct {
+    int doc_id;
+    int priority;
+} Document;
+
+typedef struct {
+    Document data[MAX_QUEUE_SIZE];
+    int front;
+    int rear;
+} PrinterQueue;
+
+// 큐 초기화
+void init_queue(PrinterQueue* q) {
+    q->front = 0;
+    q->rear = 0;
+}
+
+// 큐 상태 확인 함수들
+int is_empty(PrinterQueue* q) { return q->front == q->rear; }
+int is_full(PrinterQueue* q) { return ((q->rear + 1) % MAX_QUEUE_SIZE) == q->front; }
+
+// 등록 (Enqueue)
+void enqueue(PrinterQueue* q, Document doc) {
+    if (is_full(q)) {
+        printf("[ERROR] Queue is full! Doc ID %d failed.\n", doc.doc_id);
+        return;
+    }
+    q->rear = (q->rear + 1) % MAX_QUEUE_SIZE;
+    q->data[q->rear] = doc;
+    printf("[ENQUEUE] Doc ID: %d | Priority: %d\n", doc.doc_id, doc.priority);
+}
+
+// 추출 (Dequeue)
+Document dequeue(PrinterQueue* q) {
+    if (is_empty(q)) {
+        Document empty_doc = { -1, -1 };
+        return empty_doc;
+    }
+    q->front = (q->front + 1) % MAX_QUEUE_SIZE;
+    return q->data[q->front];
+}
+
+// 우선순위 체크 함수
+int has_higher_priority(PrinterQueue* q, int current_priority) {
+    int i = (q->front + 1) % MAX_QUEUE_SIZE;
+    int end = (q->rear + 1) % MAX_QUEUE_SIZE;
+
+    while (i != end) {
+        if (q->data[i].priority > current_priority) return 1; // 더 높은 우선순위가 존재함
+        i = (i + 1) % MAX_QUEUE_SIZE;
+    }
+    return 0;
+}
+
+// 현재 대기열 상태 출력
+void print_current_queue(PrinterQueue* q) {
+    if (is_empty(q)) {
+        printf("No documents in the waiting queue.\n");
+        return;
+    }
+    printf("[QUEUE STATUS]: ");
+    int i = (q->front + 1) % MAX_QUEUE_SIZE;
+    int end = (q->rear + 1) % MAX_QUEUE_SIZE;
+    while (i != end) {
+        printf("[ID:%d(P:%d)] -> ", q->data[i].doc_id, q->data[i].priority);
+        i = (i + 1) % MAX_QUEUE_SIZE;
+    }
+    printf("END\n");
+}
+
+// 인쇄 작업 1개 수행 (파일 로그 연동)
+void process_one_print(PrinterQueue* q, FILE* log_file) {
+    if (is_empty(q)) {
+        printf("[WARNING] No print jobs left.\n");
+        return;
+    }
+
+    Document current_doc = dequeue(q);
+
+    // 대기열 내에 나보다 우선순위가 높은 작업이 있다면 맨 뒤로 보냄
+    if (has_higher_priority(q, current_doc.priority)) {
+        printf("[PENDING] Doc ID %d (Priority:%d) sent to back.\n", current_doc.doc_id, current_doc.priority);
+        fprintf(log_file, "[PENDING] Doc ID: %d, Priority: %d\n", current_doc.doc_id, current_doc.priority);
+        enqueue(q, current_doc);
+    }
+    else {
+        printf("[PRINTING] Doc ID: %d completed successfully!\n", current_doc.doc_id);
+        fprintf(log_file, "[PRINT SUCCESS] Doc ID: %d, Priority: %d\n", current_doc.doc_id, current_doc.priority);
+    }
+    fflush(log_file); // 실시간 파일 쓰기 강제 수행
+}
+
+int main() {
+    // 1. time() 기반 완전 무작위 난수 설정
+    srand((unsigned int)time(NULL));
+
+    PrinterQueue printer;
+    init_queue(&printer);
+
+    int doc_counter = 1;
+    int choice;
+
+    // 2. 파일 쓰기 열기
+    FILE* log_file = fopen("printer_log.txt", "w");
+    if (log_file == NULL) {
+        printf("Failed to open file.\n");
+        return 1;
+    }
+    fprintf(log_file, "=== PRINTER SYSTEM LOG ===\n");
+
+    // 3. 대화형 인터페이스 루프
+    while (1) {
+        printf("\n--- Smart Printer System ---\n");
+        printf("1. Request Print (Random Priority)\n");
+        printf("2. Execute 1 Print Job\n");
+        printf("3. View Current Queue\n");
+        printf("4. Exit (Save Log File)\n");
+        printf("Select Menu: ");
+
+        // scanf_s를 쓰라고 Visual Studio 경고가 뜨면 프로젝트 속성에서 _CRT_SECURE_NO_WARNINGS를 켜거나 scanf를 쓰시면 됩니다.
+        if (scanf("%d", &choice) != 1) {
+            printf("Invalid input.\n");
+            break;
+        }
+
+        if (choice == 1) {
+            Document new_doc;
+            new_doc.doc_id = doc_counter++;
+            new_doc.priority = (rand() % 9) + 1; // 1 ~ 9 사이의 랜덤 완전 무작위 우선순위
+
+            enqueue(&printer, new_doc);
+
+        }
+        else if (choice == 2) {
+            process_one_print(&printer, log_file);
+
+        }
+        else if (choice == 3) {
+            print_current_queue(&printer);
+
+        }
+        else if (choice == 4) {
+            printf("Shutting down. Log saved to 'printer_log.txt'.\n");
+            fprintf(log_file, "=== SYSTEM SHUTDOWN ===\n");
+            break;
+        }
+        else {
+            printf("Invalid selection.\n");
+        }
+    }
+
+    fclose(log_file);
+    return 0;
+}
